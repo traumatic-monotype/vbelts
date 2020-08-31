@@ -18,7 +18,7 @@ setup(
     # Secondary setup
     url='https://github.com/traumatic-monotype/vbelts',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.7',
