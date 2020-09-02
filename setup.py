@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     # Mandatory and initial setup
     name='vbelts',
-    version='0.0.1',
+    version='0.0.2',
     description='Utilities for v-belt dimensioning',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -20,6 +20,7 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
+        'Natural Language :: English',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering',

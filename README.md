@@ -2,14 +2,14 @@
 
 ## What is vbelts?
 
-vbelts is an open-source python package that provides utilities for the computation of factors and tables used in v-belt dimensioning.
+vbelts is an open-source python package that provides utilities for constants and tables used in v-belt dimensioning.
 
 ## Installation
 
 Run the following to install:
 
-```python
-pip install vbelts
+```shell
+$ pip install vbelts
 ```
 
 ## Usage
@@ -22,22 +22,69 @@ import vbelts
 
 ### service_factor
 
-To calculate the service factor for your machine, use the ```service_factor``` submodule. It requires the type of drive and hours of usage in the following format ```vbelts.service_factor.machine(drive_type,service_hours)```. An example for an axle drived belt used by 8 hours a day:
+The service factor of the v-belts is defined by the driven machine, the  ```machine``` argument, the drive type, ```drive``` argument and the hours of service per day that the system will be in use, ```hours_service``` argument. The syntax is the following, returning a float number, the service factor:
 
 ```python
->>> vbelts.service_factor.rec_comp('axle',8)
-1.5
+>>> vbelts.service_factor(machine,drive,hours_service)
+(float)
 ```
 
-It returns a ```float``` number.
+The arguments ```machine``` and ```drive``` can take only valid entries, meanwhile the ```hours_service``` can assume any value from, but not including, 0 to 24. The machines and drives listed here are examples of common items. If the equipment you need is not listed here, choose the most similar. The following sections contain lists with the valid entries for both arguments. As an example, the service factor is calculated for a centrifugal pump driven by a normal torque ac motor with normal torque used 8 hours a day:
 
-The valid options for the drive type are:
-* ```'N cylinders'```, where N is a integer number. This is used for direct drive on combustion engines
-* ```'electric engine (high|normal) torque'```, choose between high or normal torque for electrical motors
-* ```'clutch'```, for clutch couplings
-* ```'axle'```, for axle couplings
+```python
+>>> vbelts.service_factor('centrifugal pump','normal torque', 8)
+1.1
+```
 
-The ```service_hours``` parameter can only receive an integer betwen 1 and 24.
+#### ```machine``` valid entries
+
+* ```stirrer```
+* ```small blower```
+* ```exhaustor```
+* ```centrifugal pump```
+* ```regular compressor```
+* ```light conveyor belt```
+* ```heavy conveyor belt```
+* ```large blower```
+* ```generator```
+* ```transmission axle```
+* ```laundry machine```
+* ```press```
+* ```graphical machine```
+* ```positive displacement pump```
+* ```sieving machine```
+* ```pottery machine```
+* ```bucket elevator```
+* ```reciprocating compressor```
+* ```mill```
+* ```carpentry machine```
+* ```textile machine```
+* ```crusher```
+* ```crane```
+* ```tire shop machine```
+
+#### ```drive``` valid entries
+
+* AC motors
+    * ```normal torque ac```
+    * ```ring cage ac```
+    * ```synchronous ac```
+    * ```phase division ac```
+    * ```high torque ac```
+    * ```high slipping ac```
+    * ```repulsion induction ac```
+    * ```monophasic ac```
+    * ```collector rings ac```
+* DC motors
+    * ```derivation dc```
+    * ```series winding dc```
+    * ```mixed winding dc```
+* Combustion engines
+    * ```single cylinder combustion```
+    * ```multiple cylinder combustion```
+* ```transmission axle```
+* ```clutch```
+
 
 ### profile
 
