@@ -32,8 +32,8 @@ import os
 
 from . import service_factor
 from . import profile
-from . import diam_pulley
+from . import diam
 
 from .service_factor import *
 from .profile import *
-from .diam_pulley import *
+from .diam import *

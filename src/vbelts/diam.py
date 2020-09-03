@@ -1,3 +1,7 @@
+"""Pulley diameter utilities
+
+Utilities for determining pulley mininimum diameter and related variables"""
+
 super_hc = [
     [485, 575, {0.5:0, 0.75:0, 1:3, 1.5:3, 2:3.8, 3:4.5, 5:4.5, 7.5:5.2, 10:6, 15:6.8, 20:8.2, 25:9, 30:10, 40:10, 50:11, 60:12, 75:14, 100:18, 125:20, 150:22, 200:22, 250:22, 300:27}],
     [575, 690, {0.5:0, 0.75:0, 1:2.5, 1.5:3, 2:3, 3:3.8, 5:4.5, 7.5:4.5, 10:5.2, 15:6, 20:6.8, 25:8.2, 30:9, 40:10, 50:10, 60:11, 75:13, 100:15, 125:18, 150:20, 200:22, 250:22, 300:27}],
@@ -14,7 +18,6 @@ hi_power_2 = [
     [870, 1160, {0.5:0, 0.75:2.2, 1:2.4, 1.5:2.4, 2:2.4, 3:3, 5:3, 7.5:3.8, 10:4.4, 15:4.6, 20:5.4, 25:6, 30:6.8, 40:6.8, 50:8.2, 60:9, 75:10, 100:11, 125:12.5, 150:13}],
     [1160, 1750, {0.5:0, 0.75:0, 1:2.2, 1.5:2.4, 2:2.4, 3:2.4, 5:3, 7.5:3, 10:3.8, 15:4.4, 20:4.6, 25:5, 30:5.4, 40:6, 50:6.8, 60:7.4, 75:9, 100:10, 125:11.5}],
     [1750, 3450, {0.5:0, 0.75:0, 1:0, 1.5:2.2, 2:2.4, 3:2.4, 5:2.6, 7.5:3, 10:3, 15:3.8, 20:4.4, 25:4.4}]
-
 ]
 
 
@@ -42,14 +45,17 @@ def _diam(vbelt_list:list, power:float, speed:float):
             last_diam = 0
             for key in item[2].keys():  # loops through the keys of dict
                 if power == key:
-                    return item[2].get(key)
+                    if item[2].get(key) == 0:  # zero diameter is not valid
+                        raise OutOfRangeError('Value out of range for these parameters')
+                    else:
+                        return item[2].get(key)
                 elif key > power:
                     power_max = key
                     diam_max = item[2].get(key)
                     power_min = last_power
                     diam_min = last_diam
                     pulley_diam = _interpol(power, power_min, power_max, diam_min, diam_max)
-                    if pulley_diam == 0.0:  # zero diameter is not valid
+                    if pulley_diam == 0:  # zero diameter is not valid
                         raise OutOfRangeError('Value out of range for these parameters')
                     return pulley_diam
                 last_power = key  # stores the last power
@@ -72,7 +78,7 @@ def _interpol(x_data:float, x_min:float, x_max:float, y_min:float, y_max:float):
     return y_max-((x_max - x_data)/(x_max - x_min))*(y_max - y_min)
 
 
-def min_pulley_diam(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
+def min_pulley(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
     """Select the minimum pulley diameter for a pulley, given the drive power and speed
 
     Args:
@@ -101,7 +107,7 @@ def min_pulley_diam(vbelt_model:str, axle_power:float, axle_speed:float, mode='s
     else:
         raise ValueError
 
-def driven_pulley_diam(input_pulley_diam:float, gear_ratio:float):
+def driven_pulley(input_pulley_diam:float, gear_ratio:float):
     """Calculates the driven pulley diameter
 
     Args:
@@ -110,9 +116,13 @@ def driven_pulley_diam(input_pulley_diam:float, gear_ratio:float):
     
     Returns:
         float: driven pulley diameter"""
-    return input_pulley_diam*gear_ratio
+    # check for the right data type
+    if isinstance(input_pulley_diam, (float, int)) and isinstance(gear_ratio, (float, int)):
+        return input_pulley_diam*gear_ratio
+    else:
+        raise ValueError
 
-def drive_pulley_diam(output_pulley_diam:float, gear_ratio:float):
+def drive_pulley(output_pulley_diam:float, gear_ratio:float):
     """Calculates the drive pulley diameter
 
     Args:
@@ -121,15 +131,8 @@ def drive_pulley_diam(output_pulley_diam:float, gear_ratio:float):
     
     Returns:
         float: drive pulley diameter"""
-    return output_pulley_diam/gear_ratio
-
-def gear_ratio(input_pulley:float, output_pulley:float):
-    """Calculates the gear ratio
-
-    Args:
-        input pulley (float): input (drive) pulley diameter
-        output pulley (float): output (driven) pulley diameter
-    
-    Returns:
-        float: gear ratio"""
-    return output_pulley/input_pulley
+    # check for the right data type
+    if isinstance(output_pulley_diam, (float, int)) and isinstance(gear_ratio, (float, int)):
+        return output_pulley_diam/gear_ratio
+    else:
+        raise ValueError

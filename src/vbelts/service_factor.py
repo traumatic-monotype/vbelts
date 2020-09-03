@@ -117,8 +117,7 @@ def _calc(mach_group, drive_group, _sf_p):
         _sf_p (float): partial service factor previously calculated
     
     Returns:
-        float: service factor
-    """
+        float: service factor"""
     if mach_group == 1 and drive_group == 2:
         result = _sf_p + 0.1
     elif mach_group == 2 and drive_group == 2:
@@ -156,8 +155,8 @@ def service_factor(machine:str, drive:str, hours_service:float, mach_list=mach_g
             clutch
     
     Kargs:
-        mach_list: Variable for valid machine list, already configured.
-        drive_list: Variable for valid drive list, already configured.
+        mach_list: Variable for valid machine list, already configured
+        drive_list: Variable for valid drive list, already configured
 
     Returns:
         float: the service factor"""
