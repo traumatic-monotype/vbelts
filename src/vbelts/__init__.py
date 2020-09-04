@@ -33,9 +33,11 @@ from . import profile
 from . import diam
 from . import length
 from . import util
+from . import power
 
 from .service_factor import *
 from .profile import *
 from .diam import *
 from .length import *
 from .util import *
+from .power import *

@@ -6,3 +6,8 @@ recursive-include src *.csv
 
 # added by check_manifest.py
 recursive-include data *.csv
+# added by check_manifest.py
+recursive-include data *.csv
+
+# added by check_manifest.py
+recursive-include data *.csv
