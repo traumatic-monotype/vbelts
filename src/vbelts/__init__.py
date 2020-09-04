@@ -24,16 +24,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-vbelts provides functions that allow the computation of complex factors in v-belt dimensioning.
-The sf module calculates the service factor for several machines, drive types and running conditions.
-The prf module aids in choosing the right v-belt profile for two of the most common types."""
+vbelts provides functions that allow the computation of complex factors in v-belt dimensioning."""
 
 import os
 
 from . import service_factor
 from . import profile
 from . import diam
+from . import length
+from . import util
 
 from .service_factor import *
 from .profile import *
 from .diam import *
+from .length import *
+from .util import *

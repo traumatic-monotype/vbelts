@@ -54,7 +54,7 @@ def _diam(vbelt_list:list, power:float, speed:float):
                     diam_max = item[2].get(key)
                     power_min = last_power
                     diam_min = last_diam
-                    pulley_diam = _interpol(power, power_min, power_max, diam_min, diam_max)
+                    pulley_diam = _interpol(power, power_min, power_max, diam_min, diam_max)  # interpolates using the function
                     if pulley_diam == 0:  # zero diameter is not valid
                         raise OutOfRangeError('Value out of range for these parameters')
                     return pulley_diam

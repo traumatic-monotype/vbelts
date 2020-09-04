@@ -88,7 +88,7 @@ The arguments ```machine``` and ```drive``` can take only valid entries, meanwhi
 
 ### profile
 
-The v-belt profile can be determined for several different models, the main two beign Hi-Power II and Super HC. In this version only the Hi-Power II is implemented. The submodule requires the power of the drive and rpm of the axle, used in the following format ```vbelts.profile.hi_power_2(power, rpm)```. An example for a drive with 8 hp and 540 rpm:
+The v-belt profile can be determined for several different models, the main two beign Hi-Power II and Super HC. The submodule requires the power of the drive and rpm of the axle, used in the following format ```vbelts.profile.hi_power_2(power, rpm)```. An example for a drive with 8 hp and 540 rpm:
 
 ```python
 >>> vbelts.profile.hi_power_2(8,540)
