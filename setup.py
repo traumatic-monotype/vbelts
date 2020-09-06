@@ -12,11 +12,8 @@ setup(
     long_description_content_type="text/markdown",
     package_dir={'': 'src'},
     packages=find_packages(where='src'),
+    package_data={'':["data/*.csv"]},
     include_package_data=True,
-    package_data={
-        # If any package contains *.csv, include
-        '':["data/*.csv"],
-    },
     author='Glademir Karpinski Junior, Hector Balke Nodari',
     author_email='gkarpinskijr@gmail.com, hectornodari@gmail.com',
 
