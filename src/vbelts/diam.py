@@ -2,6 +2,8 @@
 
 Utilities for determining pulley mininimum diameter and related variables"""
 
+from vbelts.util import _interpol, OutOfRangeError, NotValidError
+
 super_hc = [
     [485, 575, {0.5:0, 0.75:0, 1:3, 1.5:3, 2:3.8, 3:4.5, 5:4.5, 7.5:5.2, 10:6, 15:6.8, 20:8.2, 25:9, 30:10, 40:10, 50:11, 60:12, 75:14, 100:18, 125:20, 150:22, 200:22, 250:22, 300:27}],
     [575, 690, {0.5:0, 0.75:0, 1:2.5, 1.5:3, 2:3, 3:3.8, 5:4.5, 7.5:4.5, 10:5.2, 15:6, 20:6.8, 25:8.2, 30:9, 40:10, 50:10, 60:11, 75:13, 100:15, 125:18, 150:20, 200:22, 250:22, 300:27}],
@@ -19,14 +21,6 @@ hi_power_2 = [
     [1160, 1750, {0.5:0, 0.75:0, 1:2.2, 1.5:2.4, 2:2.4, 3:2.4, 5:3, 7.5:3, 10:3.8, 15:4.4, 20:4.6, 25:5, 30:5.4, 40:6, 50:6.8, 60:7.4, 75:9, 100:10, 125:11.5}],
     [1750, 3450, {0.5:0, 0.75:0, 1:0, 1.5:2.2, 2:2.4, 3:2.4, 5:2.6, 7.5:3, 10:3, 15:3.8, 20:4.4, 25:4.4}]
 ]
-
-
-class OutOfRangeError(Exception):
-    """Raised when value is out of range of the list"""
-    pass
-
-class NotValidError(Exception):
-    """Raised when the value passed to the function is not valid"""
 
 
 def _diam(vbelt_list:list, power:float, speed:float):
@@ -63,21 +57,6 @@ def _diam(vbelt_list:list, power:float, speed:float):
             raise OutOfRangeError('Value out of range for these parameters')
 
 
-def _interpol(x_data:float, x_min:float, x_max:float, y_min:float, y_max:float):
-    """Linear interpolation of the table data
-
-    Args:
-        x_data (float): desired input data point
-        x_min (float): nearest minimum input value in relation to the data point
-        x_max (float): nearest maximum input value in relation to the data point
-        y_min (float): nearest minimum output value in the relation to the data point
-        y_max (float): nearest maximum output value in the relation to the data point
-    
-    Results:
-        float: interpolated output value"""
-    return y_max-((x_max - x_data)/(x_max - x_min))*(y_max - y_min)
-
-
 def min_pulley(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
     """Select the minimum pulley diameter for a pulley, given the drive power and speed
 
@@ -107,6 +86,7 @@ def min_pulley(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
     else:
         raise ValueError
 
+
 def driven_pulley(input_pulley_diam:float, gear_ratio:float):
     """Calculates the driven pulley diameter
 
@@ -121,6 +101,7 @@ def driven_pulley(input_pulley_diam:float, gear_ratio:float):
         return input_pulley_diam*gear_ratio
     else:
         raise ValueError
+
 
 def drive_pulley(output_pulley_diam:float, gear_ratio:float):
     """Calculates the drive pulley diameter

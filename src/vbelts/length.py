@@ -2,8 +2,7 @@
 
 Utilities for determining center distances between pulleys and belt length"""
 
-from vbelts.diam import _interpol
-from vbelts.diam import OutOfRangeError
+from vbelts.util import _interpol, _min_dist, OutOfRangeError
 
 super_hc_length = [
     ['3V', {635:'3V250', 675:'3V265', 710:'3V280', 760:'3V300', 800:'3V315', 850:'3V355', 900:'3V355', 955:'3V375', 1015:'3V400', 1080:'3V425', 1145:'3V450', 1205:'3V475', 1270:'3V500', 1345:'3V530', 1420:'3V560', 1525:'3V600', 1600:'3V630', 1700:'3V670', 1805:'3V710', 1905:'3V750', 2030:'3V800', 2160:'3V850', 2285:'3V900', 2415:'3V950', 2540:'3V1000', 2690:'3V1060', 2845:'3V1120', 2995:'3V1180', 3175:'3V1250', 3355:'3V1320', 3555:'3V1400'}],
