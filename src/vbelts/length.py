@@ -43,7 +43,7 @@ def _min_dist(x:float, x_min:float, x_max:float):
 
 
 def _belt_std(b_type:str, length:float, vbelt_list:list):
-    """Select an item (belt model) on a dictionary inside a list
+    """Selects an item (belt model) on a dictionary inside a list
 
     Args:
         b_type (str): type of v-belt, valid values depend on the list passed
@@ -68,7 +68,7 @@ def _belt_std(b_type:str, length:float, vbelt_list:list):
 
 
 def corr_dist_factor(max_diam:float, min_diam:float, l_a:float, corr_list=h_factor):
-    """Calculate and select the appropriate correction factor for the center distance
+    """Calculates and selects the appropriate correction factor for the center distance
 
     Args:
         max_diam (float): major diameter of the pulley, mm
@@ -88,7 +88,7 @@ def corr_dist_factor(max_diam:float, min_diam:float, l_a:float, corr_list=h_fact
     raise OutOfRangeError('Value out of range for these parameters')
 
 def belt_super_hc(superhc_model:str, length:float):
-    """Select the model for a Super-HC like v-belt based on the linear length of the belt
+    """Selects the model for a Super-HC like v-belt based on the linear length of the belt
     
     Args:
         superhc_model (str): selected type of Super-HC, valid values are \'3V\', \'5V\' and \'8V\'
@@ -99,7 +99,7 @@ def belt_super_hc(superhc_model:str, length:float):
     return _belt_std(superhc_model, length, super_hc_length)
 
 def belt_hi_power_2(hipower2_model:str, length:float):
-    """Select the model for a Hi-Power 2 like v-belt based on the linear length of the belt
+    """Selects the model for a Hi-Power 2 like v-belt based on the linear length of the belt
     
     Args:
         hipower2_model (str): selected type of Hi-Power 2, valid values are \'A\', \'B\', \'C\' and \'D\'
@@ -111,7 +111,7 @@ def belt_hi_power_2(hipower2_model:str, length:float):
 
 
 def center_dist_uncorr(max_diam:float, min_diam:float):
-    """Calculate the predetermined center distance between two pulleys
+    """Predetermined center distance between two pulleys
 
     Args:
         max_diam (float): major diameter of the pulleys, mm
@@ -123,7 +123,7 @@ def center_dist_uncorr(max_diam:float, min_diam:float):
 
 
 def belt_len_corr(l_c:float, max_diam:float, min_diam:float):
-    """Calculates the corrected belt length for commercial belts
+    """Corrected belt length for commercial belts
 
     Args:
         l_c (float): commercial belt length, mm
@@ -136,7 +136,7 @@ def belt_len_corr(l_c:float, max_diam:float, min_diam:float):
 
 
 def center_dist_corr(l_a:float, h:float, max_diam:float, min_diam:float):
-    """Calculates the corrected center distance for commercial belts
+    """Corrected center distance for commercial belts
 
     Args:
         l_a (float): corrected belt length, mm
@@ -150,7 +150,7 @@ def center_dist_corr(l_a:float, h:float, max_diam:float, min_diam:float):
 
 
 def belt_len_uncorr(center:float, max_diam:float, min_diam:float):
-    """Calculate the uncorrected belt length
+    """Uncorrected belt length
 
     Args:
         center (float): distance between pulleys, mm

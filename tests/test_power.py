@@ -14,7 +14,23 @@ def eval_basic(model, profile, diam, rpm):
 def eval_additional(model, profile, gear_ratio, rpm):
     return p.additional(model, profile, gear_ratio, rpm)
 
+
+def eval_corr_factor(model, type_belt):
+    return p.corr_factor(model, type_belt)
+
+
+def eval_corr_arc_contact(diam_max, diam_min, ca):
+    return p.corr_arc_contact(diam_max, diam_min, ca)
+
 # ########### Test func
+
+def test_corr_arc():
+    assert eval_corr_arc_contact(0,0,1) == 1
+    assert eval_corr_arc_contact(450, 254, 200) == 0.83
+
+def test_corr_factor():
+    assert eval_corr_factor('hi_power', 'A-26') == 0.75
+    assert eval_corr_factor('hi_power', 'C-100') == 0.92
 
 def test_belt_transmission():
     assert eval_belt_transmission(8, 7, 1.1, 1.2) == 19.8
@@ -37,6 +53,20 @@ def test_eval_additional():
     assert eval_additional('hi_power', 'a', 1.05, 300) == 0.01 # gear_low < gear_ratio <= gear_high, rpm < rpm_fastest
 
 # ########### Test fail func
+
+def test_corr_arc_fail():
+    with pytest.raises(Exception):
+        eval_corr_arc_contact('1', 2, 1)
+        eval_corr_arc_contact(120, 100, 0)
+        eval_corr_arc_contact(120, 100, -1)
+        eval_corr_arc_contact(1000, 10, 1)
+
+def test_corr_factor_fail():
+    with pytest.raises(Exception):
+        eval_corr_factor('a', 5)
+        eval_corr_factor(5, 10)
+        eval_corr_factor('hi_power', 'A-25')
+        eval_corr_factor('hi_power', 'A-129')
 
 def test_additional_fail():
     with pytest.raises(Exception):

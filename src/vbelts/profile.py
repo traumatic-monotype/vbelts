@@ -5,7 +5,7 @@ Calculate and select vbelt profiles"""
 # internal functions
 # function value computing
 def _func_val(a:float, b:float, c:float, x:float, upper:float):
-    """Calculates x for a mathematical function with a linear (ax + b) and a constant part
+    """X for a mathematical function with a linear (ax + b) and a constant part
 
     Args:
         a (float): a coefficient for the linear part of the function
@@ -28,7 +28,7 @@ def _func_val(a:float, b:float, c:float, x:float, upper:float):
 
 # external functions
 def hi_power_2(power:float, rpm:float):
-    """Select the profile for Hi Power 2 type v-Belts with the estimated power and the rpm of the fastest axle
+    """Selects the profile for Hi Power 2 type v-belts with the estimated power and the rpm of the fastest axle
 
     Args:
         power (float): estimated power of the system, hp
@@ -51,7 +51,7 @@ def hi_power_2(power:float, rpm:float):
         return 'D'
 
 def super_hc(power:float, rpm:float):
-    """Select the profile for Super HC type v-Belts with the estimated power and the rpm of the fastest axle
+    """Selects the profile for Super HC type v-Belts with the estimated power and the rpm of the fastest axle
 
     Args:
         power (float): estimated power of the system, hp

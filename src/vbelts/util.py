@@ -11,21 +11,17 @@ class NotValidError(Exception):
     """Raised when the value passed to the function is not valid"""
 
 
-def _read_csv_data_list(filename:str):
-    # use the full path and pass the file path as filename
-    file_path = os.path.join(os.path.dirname(__file__), 'data', filename)
-    li_result = []
-    with open(f'{file_path}.csv', mode='r') as csv_file:
-        reader = csv.reader(csv_file, quoting=csv.QUOTE_NONNUMERIC)
-        next(reader)
-        for line in reader:
-            li_result.append(line)
-        return li_result
-
 def _read_csv_data(filename:str):
-    # use the full path and pass the file path as filename
+    """Read csv data and returns a generator
+
+    Args:
+        filename (str): the filename of the csv file without the *.csv
+    
+    Returns:
+        generator: the contents of the csv file in a dict"""
+    # use the full path and pass the file path as filename, OS independent
     file_path = os.path.join(os.path.dirname(__file__), 'data', filename)  # fetch full path
-    with open(f'{file_path}.csv', mode='r') as csv_file:
+    with open(f'{file_path}.csv', mode='r', encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)  # not quoted values are floats
         # next(reader)
         for line in reader:
@@ -47,7 +43,7 @@ def _interpol(x_data:float, x_min:float, x_max:float, y_min:float, y_max:float):
     return y_max-((x_max - x_data)/(x_max - x_min))*(y_max - y_min)
 
 def _min_dist(x:float, x_min:float, x_max:float):
-    """Returns the nearest value between two items, given one item that is in the interval of the two
+    """Nearest value between two items, given one item that is in the interval
 
     Args:
         x (float): desired value for calculation
@@ -68,7 +64,7 @@ def _min_dist(x:float, x_min:float, x_max:float):
         raise ValueError
 
 def gear_ratio(input_pulley:float, output_pulley:float):
-    """Calculates the gear ratio
+    """Pulley gear ratio
 
     Args:
         input pulley (float): input (drive) pulley diameter
@@ -83,7 +79,7 @@ def gear_ratio(input_pulley:float, output_pulley:float):
 
 
 def est_power(engine_power:float, serv_factor:float):
-    """Calculates the estimated power to run the pulley system
+    """Estimated power to run the pulley system
 
     Args:
         engine_power (float): engine power, hp
@@ -95,3 +91,15 @@ def est_power(engine_power:float, serv_factor:float):
         return engine_power * serv_factor
     else:
         raise ValueError
+
+
+def belt_qty(est_power_system:float, belt_transmission_capacity:float):
+    """Number of belts to transmit the estimated power
+
+    Args:
+        est_power_system (float): estimated power to run the pulley system, hp
+        belt_transmission_capacity (float): power transmission capacity per chosen belt model and conditions
+    
+    Returns:
+        float: number of belts required"""
+    return est_power_system/belt_transmission_capacity
