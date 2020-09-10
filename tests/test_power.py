@@ -31,6 +31,7 @@ def test_corr_arc():
 def test_corr_factor():
     assert eval_corr_factor('hi_power', 'A-26') == 0.75
     assert eval_corr_factor('hi_power', 'C-100') == 0.92
+    assert eval_corr_factor('super_hc', '3V600') == 0.99
 
 def test_belt_transmission():
     assert eval_belt_transmission(8, 7, 1.1, 1.2) == 19.8
@@ -51,6 +52,7 @@ def test_eval_additional():
     assert eval_additional('hi_power', 'a', 1.0, 950) == 0  # gear_low > gear_ratio, rpm == rpm_fastest
     assert eval_additional('hi_power', 'a', 1.01, 950) == 0  # gear_low  < gear_ratio <= gear_high, rpm == rpm_fastest
     assert eval_additional('hi_power', 'a', 1.05, 300) == 0.01 # gear_low < gear_ratio <= gear_high, rpm < rpm_fastest
+    assert eval_additional('super_hc', '3v', 1.03, 1400) == 0.03
 
 # ########### Test fail func
 

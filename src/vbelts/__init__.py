@@ -34,6 +34,8 @@ from . import diam
 from . import length
 from . import util
 from . import power
+from . import speed
+from . import force
 
 from .service_factor import *
 from .profile import *
@@ -41,3 +43,5 @@ from .diam import *
 from .length import *
 from .util import *
 from .power import *
+from .speed import *
+from .force import *
