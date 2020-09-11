@@ -74,7 +74,7 @@ def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_faste
     Returns:
         float: additional power, or p_a"""
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pa'
-    if gear_ratio_p < 0:
+    if gear_ratio_p < 1:
         gear_ratio = 1/gear_ratio_p
     else:
         gear_ratio = gear_ratio_p
