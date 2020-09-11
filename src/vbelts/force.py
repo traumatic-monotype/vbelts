@@ -12,7 +12,7 @@ def torque(power:float, rpm_pulley:float):
 
     Returns:
         float: torque of the pulley, kgf*m"""
-    return round((2250*power)/(pi*rpm_pulley),2)
+    return (2250*power)/(pi*rpm_pulley)
 
 
 def _contact_arc_rad(factor:float):
@@ -70,9 +70,9 @@ def _forces(m_torque:float, diam_driving:float, diam_driven:float, corr_distance
     factor_contact = (max(diam_driving, diam_driven) - min(diam_driving, diam_driven))/corr_distance_pulleys
     carc_rad = _contact_arc_rad(factor_contact)
     mu = _fric_coef(belt_material, pulley_material)    
-    f_0 = round(f_u/(exp(mu*carc_rad)-1), 2)
-    f_1 = round(f_u*(exp(mu*carc_rad)/(exp(mu * carc_rad)-1)), 2)
-    f_z = round(f_u*(exp(mu*carc_rad)+1)/(exp(mu * carc_rad)-1), 2)
+    f_0 = f_u/(exp(mu*carc_rad)-1)
+    f_1 = f_u*(exp(mu*carc_rad)/(exp(mu * carc_rad)-1))
+    f_z = f_u*(exp(mu*carc_rad)+1)/(exp(mu * carc_rad)-1)
     return [f_0, f_1, f_z]
 
 

@@ -14,4 +14,4 @@ def peripheral(pulley_diam:float, pulley_rpm:float):
     Returns:
         float: linear velocity of the v-belt, m/s"""
     pulley_diam_m = pulley_diam/1000
-    return round((pi * (pulley_diam_m/2) * pulley_rpm)/30,2)
+    return (pi * (pulley_diam_m/2) * pulley_rpm)/30,2

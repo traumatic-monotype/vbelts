@@ -83,7 +83,7 @@ def corr_dist_factor(max_diam:float, min_diam:float, l_a:float, corr_list=h_fact
         if key == adim_factor:
             return corr_list.get(key)
         elif key > adim_factor:
-            return round(_interpol(adim_factor, last_factor, key, corr_list.get(last_factor), corr_list.get(key)), 2)  # 2 digits
+            return _interpol(adim_factor, last_factor, key, corr_list.get(last_factor), corr_list.get(key))
         last_factor = key
     raise OutOfRangeError('Value out of range for these parameters')
 
@@ -132,7 +132,7 @@ def belt_len_corr(l_c:float, max_diam:float, min_diam:float):
     
     Returns:
         float: belt length corrected, mm"""
-    return round(l_c - 1.57*(max_diam + min_diam), 2)
+    return l_c - 1.57*(max_diam + min_diam)
 
 
 def center_dist_corr(l_a:float, h:float, max_diam:float, min_diam:float):
@@ -146,7 +146,7 @@ def center_dist_corr(l_a:float, h:float, max_diam:float, min_diam:float):
     
     Returns:
         float: corrected center distance between the pulleys, mm"""
-    return round((l_a - h*(max_diam - min_diam))/2, 2)
+    return (l_a - h*(max_diam - min_diam))/2
 
 
 def belt_len_uncorr(center:float, max_diam:float, min_diam:float):
@@ -159,4 +159,4 @@ def belt_len_uncorr(center:float, max_diam:float, min_diam:float):
     
     Returns:
         float: uncorrected belt length, mm"""
-    return round((2*center) + 1.57*(max_diam + min_diam) + ((max_diam - min_diam)**2)/(4 * center), 2)
+    return (2*center) + 1.57*(max_diam + min_diam) + ((max_diam - min_diam)**2)/(4 * center)

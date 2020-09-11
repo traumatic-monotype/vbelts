@@ -36,29 +36,28 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
             if line['rpm'] == rpm_fastest:
                 return line['power_b']
             elif line['rpm'] > rpm_fastest:
-                return round(_interpol(rpm_fastest, last_rpm, line['rpm'], last_pb, line['power_b']), 2)
+                return _interpol(rpm_fastest, last_rpm, line['rpm'], last_pb, line['power_b'])
         elif line['diameter'] > pulley_diam:  # if the pulley is bigger than the standard
             if line['rpm'] == rpm_fastest:
                 temp_result = line['power_b']
                 if 0 < temp_result <= 0.3:
-                    return round(temp_result, 2)
+                    return temp_result, 2
                 elif 0.30 < temp_result <= 1:
-                    return round(temp_result - 0.25, 2) 
+                    return temp_result - 0.25
                 elif 1 < temp_result <= 10:
-                    return round(temp_result - 0.5, 2)  # subtracts 0.5 hp
+                    return temp_result - 0.5  # subtracts 0.5 hp
                 elif 10 < temp_result <= 120:
-                    return round(temp_result - 2.5, 2)  # subtracts 2.5 hp
-            elif line['rpm'] > rpm_fastest:
-                temp_result = round(_interpol(rpm_fastest, last_rpm, line['rpm'], last_pb, line['power_b']), 2)
-                print(temp_result)
+                    return temp_result - 2.5  # subtracts 2.5 hp
+            elif (line['rpm'] > rpm_fastest):
+                temp_result = _interpol(rpm_fastest, last_rpm, line['rpm'], last_pb, line['power_b'])
                 if 0 < temp_result <= 0.3:
-                    return round(temp_result, 2)
+                    return temp_result
                 elif 0.30 < temp_result <= 1:
-                    return round(temp_result - 0.25, 2)
+                    return temp_result - 0.25
                 elif 1 < temp_result <= 10:
-                    return round(temp_result - 0.5, 2)
+                    return temp_result - 0.5
                 elif 10 < temp_result <= 120:
-                    return round(temp_result - 2.5, 2)
+                    return temp_result - 2.5
         last_rpm = line['rpm']
         last_pb = line['power_b']
     raise OutOfRangeError('Value out of range for these parameters')
@@ -82,7 +81,7 @@ def additional(vbelt_model:str, vbelt_profile:str, gear_ratio:float, rpm_fastest
             if line['rpm'] == rpm_fastest:
                 return line['power_a']
             elif line['rpm'] > rpm_fastest:
-                return round(_interpol(rpm_fastest, last_rpm, line['rpm'], last_pa, line['power_a']), 2)
+                return _interpol(rpm_fastest, last_rpm, line['rpm'], last_pa, line['power_a'])
         last_rpm = line['rpm']
         last_pa = line['power_a']
     raise OutOfRangeError('Value out of range for these parameters')
@@ -120,7 +119,7 @@ def corr_arc_contact(max_diam:float, min_diam:float, corr_distance_pulleys:float
         if line['factor'] == factor:
             return line['fcac']
         elif last_factor < factor < line['factor']:
-            return round(_interpol(factor, last_factor, line['factor'], last_fcac, line['fcac']),2)
+            return _interpol(factor, last_factor, line['factor'], last_fcac, line['fcac'])
         last_factor = line['factor']
         last_fcac = line['fcac']
     raise OutOfRangeError('Value out of range for these parameters')
