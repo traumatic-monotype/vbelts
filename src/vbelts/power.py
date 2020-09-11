@@ -62,18 +62,22 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
         last_pb = line['power_b']
     raise OutOfRangeError('Value out of range for these parameters')
 
-def additional(vbelt_model:str, vbelt_profile:str, gear_ratio:float, rpm_fastest:float):
+def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_fastest:float):
     """Selects the additional power transmitted by belt unit
 
     Args:
         vbelt_model (str): model of v-belt, valid values are \'hi_power\' and \'super_hc\'
         vbelt_profile (str): profile of the v-belt model, valid values are \'A\'~\'D\' and \'3V\',\'5V\' and \'8V\'
-        gear_ratio (float): gear ratio for the pulleys in the system
+        _p (float): gear ratio for the pulleys in the system
         rpm_fastest (float): rpm of the fastest pulley, rpm
     
     Returns:
         float: additional power, or p_a"""
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pa'
+    if gear_ratio_p < 0:
+        gear_ratio = 1/gear_ratio_p
+    else:
+        gear_ratio = gear_ratio_p
     for line in _read_csv_data(filename_pb):
         if line['gr_low'] > gear_ratio:
             raise OutOfRangeError('Value out of range for these parameters')

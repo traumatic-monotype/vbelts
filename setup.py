@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     # Mandatory and initial setup
     name='vbelts',
-    version='0.1.1',
+    version='0.2.0',
     description='Utilities for v-belt dimensioning',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -20,7 +20,7 @@ setup(
     # Secondary setup
     url='https://github.com/traumatic-monotype/vbelts',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Natural Language :: English',
         'Programming Language :: Python :: 3 :: Only',
@@ -31,5 +31,4 @@ setup(
         'Operating System :: OS Independent',
         ],
     extras_require = {"dev": ["pytest>=6.0.1","check-manifest>=0.42",]},
-    
 )

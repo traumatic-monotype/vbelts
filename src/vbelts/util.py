@@ -9,7 +9,11 @@ class OutOfRangeError(Exception):
 
 class NotValidError(Exception):
     """Raised when the value passed to the function is not valid"""
+    pass
 
+class ConvergenceError(Exception):
+    """Raised when the value passed to an iterator function does not converge"""
+    pass
 
 def _read_csv_data(filename:str):
     """Read csv data and returns a generator
@@ -63,17 +67,17 @@ def _min_dist(x:float, x_min:float, x_max:float):
     else:
         raise ValueError
 
-def gear_ratio(input_pulley:float, output_pulley:float):
+def gear_ratio(rpm_input:float, rpm_output:float):
     """Pulley gear ratio
 
     Args:
-        input pulley (float): input (drive) pulley diameter
-        output pulley (float): output (driven) pulley diameter
+        rpm_input (float): input (driving) axle speed, rpm
+        rpm_output (float): output (driven) axle speed, rpm
     
     Returns:
         float: gear ratio"""
-    if isinstance(input_pulley, (float, int)) and isinstance(output_pulley, (float, int)):
-        return output_pulley/input_pulley
+    if isinstance(rpm_input, (float, int)) and isinstance(rpm_output, (float, int)):
+        return rpm_input/rpm_output
     else:
         raise ValueError
 
