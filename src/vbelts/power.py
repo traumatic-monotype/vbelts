@@ -7,29 +7,33 @@ from vbelts.util import _read_csv_data, _interpol, OutOfRangeError
 
 def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
     """Power transmission capacity by belt unit
-
-    Args:
-        p_b (float): basic power, hp
-        p_a (float): additional power, hp
-        f_cc (float): length correction factor
-        f_cac (float): contact arc correction factor
-        
-    Returns:
-        float: capacity to transmit power by belt unit"""
+    :param p_b: basic power, hp
+    :type p_b: float
+    :param p_a: additional power, hp
+    :type p_a: float
+    :param f_cc: length correction factor
+    :type f_cc: float
+    :param f_cac: contact arc correction factor
+    :type f_cac: float
+    :return: capacity to transmit power by belt unit
+    :rtype:float
+    """
     return (p_b + p_a) * f_cc * f_cac
 
 
 def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:float):
     """Select the basic power transmitted by belt unit
-
-    Args:
-        vbelt_model (str): model of the v-belt, valid values are \'hi_power\' and \'super_hc\'
-        vbelt_profile (str): profile of the v-belt, valid values are \'A\'~\'D\' and \'3V\',\'5V\' and \'8V\'
-        pulley_diam (float): main diameter of the smallest pulley, mm
-        rpm_fastest (float): rpm speed of the fastest pulley, rpm
-    
-    Returns:
-        float: Basic power transmitted, or p_b"""
+    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    :type vbelt_model: str
+    :param vbelt_profile: profile of the vbelt, valid values are `A`~`D` for hi_power and `3V`, `5V` and `8V` for super_hc
+    :type vbelt_profile: str
+    :param pulley_diam: main diameter of the smallest pulley, mm
+    :type pulley_diam: float
+    :param rpm_fastest: rpm speed of the fastest pulley, rpm
+    :type rpm_fastest: float
+    :return: basic power transmitted, or p_b
+    :rtype: float
+    """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pb'
     for line in _read_csv_data(filename_pb):
         if line['diameter'] == pulley_diam:
@@ -64,15 +68,17 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
 
 def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_fastest:float):
     """Selects the additional power transmitted by belt unit
-
-    Args:
-        vbelt_model (str): model of v-belt, valid values are \'hi_power\' and \'super_hc\'
-        vbelt_profile (str): profile of the v-belt model, valid values are \'A\'~\'D\' and \'3V\',\'5V\' and \'8V\'
-        _p (float): gear ratio for the pulleys in the system
-        rpm_fastest (float): rpm of the fastest pulley, rpm
-    
-    Returns:
-        float: additional power, or p_a"""
+    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    :type vbelt_model: str
+    :param vbelt_profile: profile of the vbelt, valid values are `A`~`D` for hi_power and `3V`, `5V` and `8V` for super_hc
+    :type vbelt_profile: str
+    :param gear_ratio_p: gear ratio for the pulleys in the system
+    :type gear_ratio_p: float
+    :param rpm_fastest: rpm speed of the fastest pulley, rpm
+    :type rpm_fastest: float
+    :return: additional power transmitted, or p_a
+    :rtype: float
+    """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pa'
     if gear_ratio_p < 1:
         gear_ratio = 1/gear_ratio_p
@@ -93,13 +99,13 @@ def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_faste
 
 def corr_factor(vbelt_model:str, vbelt_type:str):
     """Selects the appropriate correction factor for belt length
-
-    Args:
-        vbelt_model (str): model of v-belt, valid values are \'hi_power\' and \'super_hc\'
-        vbelt_type (str): type of v-belt, valid values are in the documentation
-    
-    Returns:
-        float: correction factor"""
+    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    :type vbelt_model: str
+    :param vbelt_type: type of v-belt, for more informatio see the documentation
+    :type vbelt_type: str
+    :return: correction factor
+    :rtype: float
+    """
     filename_fcc = f'{vbelt_model}_fcc'
     for line in _read_csv_data(filename_fcc):
         if line['type'] == vbelt_type:
@@ -108,14 +114,15 @@ def corr_factor(vbelt_model:str, vbelt_type:str):
 
 def corr_arc_contact(max_diam:float, min_diam:float, corr_distance_pulleys:float):
     """Selects the appropriate correction factor for contact arc
-
-    Args:
-        max_diam (float): Major diameter for the pulleys in the system, mm
-        min_diam (float): Minor diameter for the pulleys in the system, mm
-        corr_distance_pulleys (float): corrected distance between the pulley's center, mm
-    
-    Returns:
-        float: correction factor for contact arc"""
+    :param max_diam: major diameter for the pulleys in the system, mm
+    :type max_diam: float
+    :param min_diam: minor diameter for the pulleys in the system, mm
+    :type min_diam: float
+    :param corr_distance_pulleys: corrected distance between the pulley's center, mm
+    :type corr_distance_pulleys: float
+    :return: correction factor for contact arc
+    :rtype: float
+    """
     factor = (max_diam - min_diam) / corr_distance_pulleys
     last_factor = 0
     last_fcac = 1

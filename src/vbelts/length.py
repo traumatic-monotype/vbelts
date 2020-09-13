@@ -21,15 +21,16 @@ h_factor = {0:0, 0.02:0.01, 0.04:0.02, 0.06:0.03, 0.08:0.04, 0.1:0.05, 0.12:0.06
 
 
 def _min_dist(x:float, x_min:float, x_max:float):
-    """Returns the nearest value between two items, given one item that is in the interval of the two
-
-    Args:
-        x (float): desired value for calculation
-        x_min (float): nearest minimum value on the scale
-        x_max (float): nearest maximum value on the scale
-    
-    Returns:
-        float: nearest value of x"""
+    """Nearest value between two items, given one item that is in the interval of the two
+    :param x: value to calculate
+    :type x: float
+    :param x_min: nearest minimum value on the scale
+    :type x_min: float
+    :param x_max: nearest maximum value on the scale
+    :type x_max: float
+    :return: the nearest value of x between the two given
+    :rtype: float
+    """
     dist_1 = (x - x_min)/x
     dist_2 = (x_max - x)/x
     if dist_1 < dist_2:
@@ -43,15 +44,16 @@ def _min_dist(x:float, x_min:float, x_max:float):
 
 
 def _belt_std(b_type:str, length:float, vbelt_list:list):
-    """Selects an item (belt model) on a dictionary inside a list
-
-    Args:
-        b_type (str): type of v-belt, valid values depend on the list passed
-        length (float): linear length of the v-belt, mm
-        vbelt_list (list): formatted list containing the model, length and type
-
-    Returns:
-        tuple: first item is the selected length, second item is the selected model"""
+    """Select a belt model in a dictionary inside a list
+    :param b_type: type of v-belt
+    :type b_type: str
+    :param length: linear length of the v-belt, mm
+    :type length: float
+    :param vbelt_list: formatted list containing the model, length and type
+    :type vbelt_list: list
+    :return: tuple with two items, first is selected length, second is selected model
+    :rtype: tuple
+    """
     for item in vbelt_list:
         if b_type == item[0]:
             last_length = 0
@@ -68,15 +70,18 @@ def _belt_std(b_type:str, length:float, vbelt_list:list):
 
 
 def corr_dist_factor(max_diam:float, min_diam:float, l_a:float, corr_list=h_factor):
-    """Calculates and selects the appropriate correction factor for the center distance
-
-    Args:
-        max_diam (float): major diameter of the pulley, mm
-        min_diam (float): minor diameter of the pulley, mm
-        l_a (float): corrected belt length, mm
-    
-    Returns:
-        float: correction factor for the center distance"""
+    """Calculates and selects the appropriate correction factor for the center distance between pulleys
+    :param max_diam: major diameter of the pulley system, mm
+    :type max_diam: float
+    :param min_diam: minor diameter of the pulley system, mm
+    :type min_diam: float
+    :param l_a: corrected belt length, mm
+    :type l_a: float
+    :param corr_list: passes the list containing the correction factor, defaults to h_factor
+    :type: list, optional
+    :return: correction factor for the center distance between pulleys, mm
+    :rtype: float
+    """
     adim_factor = (max_diam - min_diam)/l_a
     for key in corr_list:
         last_factor = 0
@@ -88,75 +93,79 @@ def corr_dist_factor(max_diam:float, min_diam:float, l_a:float, corr_list=h_fact
     raise OutOfRangeError('Value out of range for these parameters')
 
 def belt_super_hc(superhc_model:str, length:float):
-    """Selects the model for a Super-HC like v-belt based on the linear length of the belt
-    
-    Args:
-        superhc_model (str): selected type of Super-HC, valid values are \'3V\', \'5V\' and \'8V\'
-        length (float): linear length needed for the belt, mm
-    
-    Returns:
-        tuple: first item is the selected length, second item is the selected model"""
+    """Selects the model for a Super-HC v-belt based on the linear length of the belt
+    :param superhc_model: type of Super-HC, use `3V`, `5V` or `8V`
+    :type superhc_model: str
+    :param length: linear length needed for the v-belt, mm
+    :type length: float
+    :return: a tuple with two items, the first is the selected length, the second is the selected model
+    :rtype: tuple
+    """
     return _belt_std(superhc_model, length, super_hc_length)
 
 def belt_hi_power_2(hipower2_model:str, length:float):
-    """Selects the model for a Hi-Power 2 like v-belt based on the linear length of the belt
-    
-    Args:
-        hipower2_model (str): selected type of Hi-Power 2, valid values are \'A\', \'B\', \'C\' and \'D\'
-        length (float): linear length needed for the belt, mm
-    
-    Returns:
-        tuple: first item is the selected length, second item is the selected model"""
+    """Selects the model for a Hi-Power and Hi-Power 2 v-belts based on the linear length of the belt
+    :param superhc_model: type of Super-HC, use `A`, `B`, `C` or `D`
+    :type superhc_model: str
+    :param length: linear length needed for the v-belt, mm
+    :type length: float
+    :return: a tuple with two items, the first is the selected length, the second is the selected model
+    :rtype: tuple
+    """
     return _belt_std(hipower2_model, length, hipower_2_length)
 
 
 def center_dist_uncorr(max_diam:float, min_diam:float):
-    """Predetermined center distance between two pulleys
-
-    Args:
-        max_diam (float): major diameter of the pulleys, mm
-        min_diam (float): minor diameter of the pulleys, mm
-    
-    Returns:
-        float: center distance for the pulleys used, mm"""
+    """Optimal distance between two pulleys
+    :param max_diam: major diameter of the pulleys, mm
+    :type max_diam: float
+    :param min_diam: minor diameter of the pulleys, mm
+    :type min_diam: float
+    :return: center distance between the two pulleys, mm
+    :rtype: float
+    """
     return (3 * min_diam + max_diam)/2
 
 
 def belt_len_corr(l_c:float, max_diam:float, min_diam:float):
     """Corrected belt length for commercial belts
-
-    Args:
-        l_c (float): commercial belt length, mm
-        max_diam (float): major diameter of the pulleys, mm
-        min_diam (float): minor diameter of the pulleys, mm
-    
-    Returns:
-        float: belt length corrected, mm"""
+    :param l_c: commercial belt length, mm
+    :type l_c: float
+    :param max_diam: major diameter of the pulleys, mm
+    :type max_diam: float
+    :param min_diam: minor diameter of the pulleys, mm
+    :type min_diam: float
+    :return: v-belt length corrected, mm
+    :type: float
+    """
     return l_c - 1.57*(max_diam + min_diam)
 
 
 def center_dist_corr(l_a:float, h:float, max_diam:float, min_diam:float):
     """Corrected center distance for commercial belts
-
-    Args:
-        l_a (float): corrected belt length, mm
-        h (float): correction factor for the center distance
-        max_diam (float): major diameter of the pulleys, mm
-        min_diam (float): minor diameter of the pulleys, mm
-    
-    Returns:
-        float: corrected center distance between the pulleys, mm"""
+    :param l_a: corrected belt length, mm
+    :type l_a: float
+    :param h: correction factor for the center distance between pulleys
+    :type: float
+    :param max_diam: major diameter of the pulleys, mm
+    :type max_diam: float
+    :param min_diam: minor diameter of the pulleys, mm
+    :type min_diam: float
+    :return: corrected center distance between the pulleys, mm
+    :rtype: float
+    """
     return (l_a - h*(max_diam - min_diam))/2
 
 
 def belt_len_uncorr(center:float, max_diam:float, min_diam:float):
     """Uncorrected belt length
-
-    Args:
-        center (float): distance between pulleys, mm
-        min_diam (float): minor diameter between the pulleys, mm
-        max_diam (float): major diameter between the pulleys, mm
-    
-    Returns:
-        float: uncorrected belt length, mm"""
+    :param center: distance between the pulley's center, mm
+    :type: float
+    :param max_diam: major diameter of the pulleys, mm
+    :type max_diam: float
+    :param min_diam: minor diameter of the pulleys, mm
+    :type min_diam: float
+    :return: uncorrected belt length, mm
+    :rtype: float
+    """
     return (2*center) + 1.57*(max_diam + min_diam) + ((max_diam - min_diam)**2)/(4 * center)

@@ -25,15 +25,16 @@ hi_power_2 = [
 
 
 def _diam(vbelt_list:list, power:float, speed:float):
-    """Chosses the minimum diameter for in a list containing the engine power and rpm
-
-    Args:
-        vbelt_list (list): list of pulley diameters containing speed range and engine power
-        power (float): engine power, hp
-        speed (float): main rotation speed of the engine, rpm
-    
-    Returns:
-        float: pulley diameter, in"""
+    """Chooses the minimum diameter in a list containing engine power and rpm
+    :param vbelt_list: list of pulley diameters containing speed range and engine power
+    :type vbelt_list: list
+    :param power: engine power, hp
+    :type power: float
+    :param speed: rotation speed of the engine, rpm
+    :type speed: float
+    :return: pulley diameter, in
+    :rtype: float
+    """
     for item in vbelt_list:
         if item[0] <= speed < item[1]:
             last_power = 0
@@ -59,18 +60,17 @@ def _diam(vbelt_list:list, power:float, speed:float):
 
 
 def min_pulley(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
-    """Select the minimum pulley diameter for a pulley, given the drive power and speed
-
-    Args:
-        vbelt_model (str): set the vbelt model from the two available: \'super_hc\' or \'hi_power\'
-        axle_power (float): axle power, hp
-        axle_speed (float): speed of the fastest axle, rpm
-    
-    Kargs:
-        mode (str): sets the result diameter unit, the standard is in the SI unit, \'imp\' for imperial
-    
-    Returns:
-        float: minimum diameter for the pulley, mm or in
+    """Minimum pulley diameter given the drive power and speed
+    :param vbelt_model: set the v-belt model, use `super_hc` or `hi_power`
+    :type vbelt_model: str
+    :param axle_power: power on the pulley axle, hp
+    :type axle_power: float
+    :param axle_speed: rotational speed of the fastest axle, rpm
+    :type axle_speed: float
+    :param mode: define the return units, defaults to `si`
+    :type mode: str, optional
+    :return: minimum diameter of the pulley
+    :rtype: float
     """
     # chooses the model
     if vbelt_model == 'super_hc':
@@ -89,14 +89,14 @@ def min_pulley(vbelt_model:str, axle_power:float, axle_speed:float, mode='si'):
 
 
 def driven_pulley(driving_pulley_diam:float, gear_ratio:float):
-    """Driven pulley diameter
-
-    Args:
-        driving_pulley_diam (float): driving pulley diameter
-        gear_ratio (float): transmission ratio, decimal
-    
-    Returns:
-        float: driven pulley diameter, mm"""
+    """Driven pulley diameter given the driving pulley diameter
+    :param driving_pulley_diam: diameter of the driving pulley, mm
+    :type driving_pulley_diam: float
+    :param gear_ratio: gear ratio of the pulleys in decimal form
+    :type gear_ratio: float
+    :return: driven pulley diameter, mm
+    :rtype: float
+    """
     # check for the right data type
     if isinstance(driving_pulley_diam, (float, int)) and isinstance(gear_ratio, (float, int)):
         return driving_pulley_diam * gear_ratio
@@ -105,14 +105,14 @@ def driven_pulley(driving_pulley_diam:float, gear_ratio:float):
 
 
 def driving_pulley(driven_pulley_diam:float, gear_ratio:float):
-    """Driving pulley diameter
-
-    Args:
-        driven_pulley_diam (float): output (driven) pulley diameter
-        gear_ratio (float): transmission ratio, decimal
-    
-    Returns:
-        float: driving pulley diameter, mm"""
+    """Driving pulley diameter given the driven pulley diameter
+    :param driven_pulley_diam: diameter of the driven pulley, mm
+    :type driven_pulley_diam: float
+    :param gear_ratio: gear ratio of the pulleys in decimal form
+    :type gear_ratio: float
+    :return: driving pulley diameter, mm
+    :rtype: float
+    """
     # check for the right data type
     if isinstance(driven_pulley_diam, (float, int)) and isinstance(gear_ratio, (float, int)):
         return driven_pulley_diam/gear_ratio
@@ -121,16 +121,18 @@ def driving_pulley(driven_pulley_diam:float, gear_ratio:float):
 
 
 def driven_commercial(gear_ratio:float, rpm_input:float, driving_pulley:float, desired_pulley_diam:int):
-    """Selects a pulley with an approximate commercial diameter thorugh iterations
-
-    Args:
-        gear_ratio (float): desired gear ratio
-        rpm_input (float): speed of the input axle, rpm
-        driving_pulley (float): diameter of the driving pulley, mm
-        desired_pulley_diam (int): desired diameter of the driven pulley, mm
-
-    Returns:
-        list: with the calculated driven diameter, respective gear ratio, speed of the input and output axle"""
+    """Selects an approximate to the commercial diameter of a pulley through convergence
+    :param gear_ratio: reference gear ratio in decimal form
+    :type gear_ratio: float
+    :param rpm_input: rotational speed of the driving axle, rpm
+    :type rpm_input: float
+    :param driving_pulley: diameter of the driving pulley, mm
+    :type driving_pulley: float
+    :param desired_pulley_diam: desired diameter of the driven pulley, mm
+    :type desired_pulley_diam: int
+    :return: a list with the calculated driven diameter, new gear ratio for this diameter, driving and driven speed of the axles
+    :rtype: list
+    """
     # calculate gear ratio range
     range_rpm = 100
     rpm_output = rpm_input/gear_ratio

@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     # Mandatory and initial setup
     name='vbelts',
-    version='0.2.1',
+    version='0.2.2',
     description='Utilities for v-belt dimensioning',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -30,5 +30,5 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         ],
-    extras_require = {"dev": ["pytest>=6.0.1","check-manifest>=0.42",]},
+    extras_require = {"dev": ["pytest==6.0.1","check-manifest==0.42","sphinx==3.2.1","autodoc==0.5.0","sphinx-rtd-theme==0.5.0"]},
 )

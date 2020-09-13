@@ -53,13 +53,13 @@ drive_group_data = [
 
 def _group(entry, comp_list):
     """Searches the comp_list for the string in the entry and returns the second item
-
-    Args:
-        entry (str): string used on the search
-        comp_list (list): list of lists that contains the values used on the search
-    
-    Returns:
-        int: second item on the sublist converted to integer"""
+    :param entry: string for the search
+    :type entry: str
+    :param comp_list: list of lists that contains the values used on the search
+    :type comp_list: list
+    :return: second item on the sublist that matches the string
+    :rtype: int
+    """
     data_regex = re.compile(entry)
     try:
         for item in comp_list:
@@ -71,13 +71,13 @@ def _group(entry, comp_list):
 
 def _sf_partial(mach_group, service_hours):
     """Select the partial result for the service factor
-
-    Args:
-        mach_group (int): machine group for a particular entry
-        service_hours (float): hours of service per day of the machine
-    
-    Returns:
-        float: partial service factor regarding machine group and service hours"""
+    :param mach_group: machine group for the searched entry
+    :type mach_group: int
+    :param service_hours: hours of service per day of the machine
+    :type service_hours: float
+    :return: partial service factor
+    :rtype: float
+    """
     if mach_group == 1:
         if 0 < service_hours <= 5:
             sf_part = 1.0
@@ -110,14 +110,15 @@ def _sf_partial(mach_group, service_hours):
 
 def _calc(mach_group, drive_group, _sf_p):
     """Select and calculate the main service factor
-
-    Args:
-        mach_group (int): machine group for a particular entry
-        drive_group (int): drive group for a particular entry
-        _sf_p (float): partial service factor previously calculated
-    
-    Returns:
-        float: service factor"""
+    :param mach_group: machine group for a data entry
+    :type mach_group: int
+    :param drive_group: drive group for a data entry
+    :type drive_group: int
+    :param _sf_p: partial service factor
+    :type _sf_p: float
+    :return: service factor
+    :rtype: float
+    """
     if mach_group == 1 and drive_group == 2:
         result = _sf_p + 0.1
     elif mach_group == 2 and drive_group == 2:
@@ -139,27 +140,19 @@ def _calc(mach_group, drive_group, _sf_p):
         
 def service_factor(machine:str, drive:str, hours_service:float, mach_list=mach_group_data, drive_list=drive_group_data):
     """Calculate the service factor based on the machine driven, the drive and hours of service per day
-
-    Args:
-        machine (str): The type of machine driven. Valid arguments are:
-            stirrer, small blower, exhaustor, centrifugal pump, regular compressor, light conveyor,
-            heavy conveyor, large blower, generator, transmission axle, laundry machine, press, graphical machine,
-            positive displacement pump, sieving machine, pottery machine, bucket elevator, reciprocating compressor,
-            mill, carpentry machine, textile machine, crusher, crane, tire shop machine
-        drive (str): The type of drive for the machine. Valid arguments are:
-            ac motors: normal torque ac, ring cage ac, synchronous ac, phase division ac, high torque ac, high slipping ac, repulsion induction ac,
-                       monophasic ac
-            dc motors: derivation dc, series winding dc, mixed winding dc
-            combustion engine: multiple cylinder combustion, single cylinder combustion
-            transmission axle
-            clutch
-    
-    Kargs:
-        mach_list: Variable for valid machine list, already configured
-        drive_list: Variable for valid drive list, already configured
-
-    Returns:
-        float: the service factor"""
+    :param machine: type of machine driven, for valid values see the documentation
+    :type machine: str
+    :param drive: type of drive for the machine, for valid values see the documentation
+    :type drive: str
+    :param hours_service: hours of service of the system
+    :type hours_service: float
+    :param mach_list: valid machine list, defaults to mach_group_data
+    :type mach_list: variable, optional
+    :param drive_list: valid drive list, defaults to drive_group_data
+    :type drive_list: variable, optional
+    :return: service factor
+    :rtype: float
+    """
     machine_group = _group(machine, mach_list)
     drive_group = _group(drive, drive_list)
     precalc = _sf_partial(machine_group, hours_service)

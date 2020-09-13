@@ -4,25 +4,24 @@ from math import pi, exp
 from vbelts.util import _read_csv_data, _interpol, OutOfRangeError
 
 def torque(power:float, rpm_pulley:float):
-    """Torque of the pulley
-
-    Args:
-        power (float): power of the system, hp
-        rpm_pulley (float): rotational speed of the pulley, rpm
-
-    Returns:
-        float: torque of the pulley, kgf*m"""
+    """Torque on the pulley
+    :param power: power of the system, hp
+    :type power: float
+    :param rpm_pulley: rotational speed of the pulley, rpm
+    :type rpm_pulley: float
+    :return: torque of the pulley in kgf*m
+    :rtype: float
+    """
     return (2250*power)/(pi*rpm_pulley)
 
 
 def _contact_arc_rad(factor:float):
-    """Contact arc for a given factor searched and interpolated from a csv data table
-
-    Args:
-        factor (float): factor (D-d)/Ca
-
-    Returns:
-        float: angle of contact of the v-belt, rad"""
+    """Searches and interpolates a factor on a csv data table
+    :param factor: factor (D-d)/Ca
+    :type factor: float
+    :return: angle of the contact between v-belt and pulley, rad
+    :rtype: float
+    """
     last_factor = 0
     last_contact_arc = 180
     for line in _read_csv_data('fcac_contact_arc'):
@@ -37,15 +36,15 @@ def _contact_arc_rad(factor:float):
     raise OutOfRangeError('Value out of range for these parameters')
 
 
-def _fric_coef(belt_material:str, pulley_material:str):
-    """Select coefficient of friction from csv data
-
-    Args:
-        belt_material (string): belt material, valid values are \'polyurethane\', \'nylon\' and \'rubber\'
-        pulley_material (string): pulley material, valid values are \'steel\' and \'aluminum\'
-    
-    Returns:
-        float: friction coefficient"""
+def _fric_coef(belt_material:str='rubber', pulley_material:str='steel'):
+    """Select coefficient of friction from csv data table
+    :param belt_material: material of the belt, select between `polyurethane`, `nylon` and `rubber`, defaults to `rubber`
+    :type belt_material: str, optional
+    :param pulley_material: material of the pulley, select between `steel` and `aluminum`, defaults to `steel`
+    :type pulley_material: str, optional
+    :return: friction coefficient
+    :rtype: float
+    """
     for line in _read_csv_data('fric_coef'):
         if line['belt_material'] == belt_material:
             if line['pulley_material'] == pulley_material:
@@ -53,57 +52,69 @@ def _fric_coef(belt_material:str, pulley_material:str):
     raise OutOfRangeError('Value out of range for these parameters')
 
 
-def _forces(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str, pulley_material:str):
-    """Main forces of the pulley-belt system
-
-    Args:
-        m_torque (float): torque of the system, kgf*m
-        diam_driving (float): diameter of the driving pulley, mm
-        diam_driven (float): dimater of the driven pulley, mm
-        corr_distance_pulleys (float): corrected distance between the pulley's center, mm
-        belt_material (string): belt material, valid values are \'polyurethane\', \'nylon\' and \'rubber\'
-        pulley_material (string): pulley material, valid values are \'steel\' and \'aluminum\'
-    
-    Returns:
-        list: three main force values, f_0, f_1 and f_z, in N"""
+def _forces(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str='rubber', pulley_material:str='steel'):
+    """Main forces of the pulley/belt system
+    :param m_torque: torque of the system, kgf*m
+    :type m_torque: float
+    :param diam_driving: diameter of the driving pulley, mm
+    :type diam_driving: float
+    :param diam_driven: diameter of the driven pulley, mm
+    :type diam_driven: float
+    :param corr_distance_pulleys: corrected distance between the pulley's center, mm
+    :type corr_distance_pulleys: float
+    :param belt_material: material of the belt, select between `polyurethane`, `nylon` and `rubber`, defaults to `rubber`
+    :type belt_material: str, optional
+    :param pulley_material: material of the pulley, select between `steel` and `aluminum`, defaults to `steel`
+    :type pulley_material: str, optional
+    :return: list of three main force values, f_0, f_1 and f_z, all in kgf
+    :rtype: list
+    """
     f_u = (m_torque * 9.81)/(diam_driving/(2 * 1000))
     factor_contact = (max(diam_driving, diam_driven) - min(diam_driving, diam_driven))/corr_distance_pulleys
     carc_rad = _contact_arc_rad(factor_contact)
     mu = _fric_coef(belt_material, pulley_material)    
-    f_0 = f_u/(exp(mu*carc_rad)-1)
-    f_1 = f_u*(exp(mu*carc_rad)/(exp(mu * carc_rad)-1))
-    f_z = f_u*(exp(mu*carc_rad)+1)/(exp(mu * carc_rad)-1)
+    f_0 = (f_u/(exp(mu*carc_rad)-1))/9.81
+    f_1 = (f_u*(exp(mu*carc_rad)/(exp(mu * carc_rad)-1)))/9.81
+    f_z = (f_u*(exp(mu*carc_rad)+1)/(exp(mu * carc_rad)-1))/9.81
     return [f_0, f_1, f_z]
 
 
-def axle(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str, pulley_material:str):
+def axle(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str='rubber', pulley_material:str='steel'):
     """Axle force on the pulley
+    :param m_torque: torque of the system, kgf*m
+    :type m_torque: float
+    :param diam_driving: diameter of the driving pulley, mm
+    :type diam_driving: float
+    :param diam_driven: diameter of the driven pulley, mm
+    :type diam_driven: float
+    :param corr_distance_pulleys: corrected distance between the pulley's center, mm
+    :type corr_distance_pulleys: float
+    :param belt_material: material of the belt, select between `polyurethane`, `nylon` and `rubber`, defaults to `rubber`
+    :type belt_material: str, optional
+    :param pulley_material: material of the pulley, select between `steel` and `aluminum`, defaults to `steel`
+    :type pulley_material: str, optional
+    :return: axle force on the pulley, kgf
+    :rtype: float
+    """
+    return (_forces(m_torque, diam_driving, diam_driven, corr_distance_pulleys, belt_material, pulley_material)[2])
 
-    Args:
-        m_torque (float): torque of the system, kgf*m
-        diam_driving (float): diameter of the driving pulley, mm
-        diam_driven (float): dimater of the driven pulley, mm
-        corr_distance_pulleys (float): corrected distance between the pulley's center, mm
-        belt_material (string): belt material, valid values are \'polyurethane\', \'nylon\' and \'rubber\'
-        pulley_material (string): pulley material, valid values are \'steel\' and \'aluminum\'
-    
-    Returns:
-        float: axle force on the pulley, kgf"""
-    return (_forces(m_torque, diam_driving, diam_driven, corr_distance_pulleys, belt_material, pulley_material)[2])/9.81
 
-
-def tangential(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str, pulley_material:str):
+def tangential(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str='rubber', pulley_material:str='steel'):
     """Tangential force on the v-belt
-
-    Args:
-        m_torque (float): torque of the system, kgf*m
-        diam_driving (float): diameter of the driving pulley, mm
-        diam_driven (float): dimater of the driven pulley, mm
-        corr_distance_pulleys (float): corrected distance between the pulley's center, mm
-        belt_material (string): belt material, valid values are \'polyurethane\', \'nylon\' and \'rubber\'
-        pulley_material (string): pulley material, valid values are \'steel\' and \'aluminum\'
-    
-    Returns:
-        float: tangential force on the v-belt, kgf"""
+    :param m_torque: torque of the system, kgf*m
+    :type m_torque: float
+    :param diam_driving: diameter of the driving pulley, mm
+    :type diam_driving: float
+    :param diam_driven: diameter of the driven pulley, mm
+    :type diam_driven: float
+    :param corr_distance_pulleys: corrected distance between the pulley's center, mm
+    :type corr_distance_pulleys: float
+    :param belt_material: material of the belt, select between `polyurethane`, `nylon` and `rubber`, defaults to `rubber`
+    :type belt_material: str, optional
+    :param pulley_material: material of the pulley, select between `steel` and `aluminum`, defaults to `steel`
+    :type pulley_material: str, optional
+    :return: tangential force on the pulley, kgf
+    :rtype: float
+    """
     ft_1, ft_2 = _forces(m_torque, diam_driving, diam_driven, corr_distance_pulleys, belt_material, pulley_material)[:2]
-    return (ft_1 - ft_2)/9.81
+    return (ft_1 - ft_2)

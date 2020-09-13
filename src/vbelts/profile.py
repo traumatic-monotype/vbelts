@@ -6,16 +6,19 @@ Calculate and select vbelt profiles"""
 # function value computing
 def _func_val(a:float, b:float, c:float, x:float, upper:float):
     """X for a mathematical function with a linear (ax + b) and a constant part
-
-    Args:
-        a (float): a coefficient for the linear part of the function
-        b (float): b coefficient for the linear part of the function
-        c (float): y value for the constant part of the function
-        x (float): the desired value of x
-        upper (float): the upper limit of the linear function
-    
-    Results:
-        float: the y value for math function"""
+    :param a: a coefficient for the linear part of the function
+    :type a: float
+    :param b: b coefficient for the linear part of the function
+    :type b: float
+    :param c: y value for the constant part of the function
+    :type c: float
+    :param x: input value of x
+    :type x: float
+    :param upper: upper limit of the linear function in the y axis
+    :type upper: float
+    :return: y value for the math function
+    :rtype: float
+    """
     # if the value is within the linear function range
     if x < upper:
         eq = a * x + b
@@ -29,13 +32,13 @@ def _func_val(a:float, b:float, c:float, x:float, upper:float):
 # external functions
 def hi_power_2(power:float, rpm:float):
     """Selects the profile for Hi Power 2 type v-belts with the estimated power and the rpm of the fastest axle
-
-    Args:
-        power (float): estimated power of the system, hp
-        rpm (float): rotational speed of the fastest axle, rpm
-    
-    Returns:
-        str: v-belt chosen profile"""
+    :param power: estimated power of the system, hp
+    :type power: float
+    :param rpm: rotational speed of the fastest axle, rpm
+    :type rpm: float
+    :return: v-belt chosen profile
+    :rtype: str
+    """
     # compute all three boundaries for the same power
     rpm_a = _func_val(74.1950272674027, 47.215442190042, 3322, power, 50.7)
     rpm_b = _func_val(19.3889694765281, 32.2532889843209, 2151.4, power, 122.3)
@@ -52,13 +55,13 @@ def hi_power_2(power:float, rpm:float):
 
 def super_hc(power:float, rpm:float):
     """Selects the profile for Super HC type v-Belts with the estimated power and the rpm of the fastest axle
-
-    Args:
-        power (float): estimated power of the system, hp
-        rpm (float): rotational speed of the fastest axle, rpm
-    
-    Returns:
-        str: v-belt chosen profile"""
+    :param power: estimated power of the system, hp
+    :type power: float
+    :param rpm: rotational speed of the fastest axle, rpm
+    :type rpm: float
+    :return: v-belt chosen profile
+    :rtype: str
+    """
     rpm_3v = _func_val(40.6961726224751, 11.8866879052094, 3316.25, power, 91)
     rpm_5v = _func_val(4.30114168431602, 3.84423100031302, 1332.74, power, 309)
     if rpm >= rpm_3v:
