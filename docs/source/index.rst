@@ -74,7 +74,7 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    :maxdepth: 2
    :caption: Data:
 
-   data/vbelt_profile_super_hc
+   data/vbelt_model_profile
 
 
 Indices and tables

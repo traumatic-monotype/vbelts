@@ -30,7 +30,7 @@ def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
 
     Example
     -------
-       >>> power.belt_transmission(p_b=1.5, p_a=0.2, f_cc=1.0, f_cac=0.7)
+       >>> vbelts.power.belt_transmission(p_b=1.5, p_a=0.2, f_cc=1.0, f_cac=0.7)
        1.19
 
 
@@ -42,22 +42,25 @@ def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
 
 
 def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:float):
-    """Select the basic power transmitted by belt unit.
+    """Select the basic power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.  
 
-    The valid entries for and `vbelt_profile` are in the :ref:`Data <vbelt_profile_super_hc>` section.  
-
-    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    :param vbelt_model: model of the v-belt
     :type vbelt_model: str
-    :param vbelt_profile: profile of the vbelt, valid values are `A`~`D` for hi_power and `3V`, `5V` and `8V` for super_hc
+    :param vbelt_profile: profile of the vbelt
     :type vbelt_profile: str
-    :param pulley_diam: main diameter of the smallest pulley, mm
+    :param pulley_diam: main diameter of the smallest pulley [mm]
     :type pulley_diam: float
-    :param rpm_fastest: rpm speed of the fastest pulley, rpm
+    :param rpm_fastest: rpm speed of the fastest pulley [rpm]
     :type rpm_fastest: float
-    :return: basic power transmitted, or p_b
+    :return: basic power transmitted or p_b [hp]
     :rtype: float
 
-    
+    Example
+    -------
+    >>> vbelts.power.basic(vbelt_model='hi_power', vbelt_profile='a', pulley_diam=180, rpm_fastest=900)
+    4.35999
+    >>> vbelts.power.basic(vbelt_model='super_hc', vbelt_profile='3v', pulley_diam=180, rpm_fastest=900)
+    5.02
     """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pb'
     for line in _read_csv_data(filename_pb):
@@ -92,17 +95,25 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
     raise OutOfRangeError('Value out of range for these parameters')
 
 def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_fastest:float):
-    """Selects the additional power transmitted by belt unit
-    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    """Selects the additional power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.
+
+    :param vbelt_model: model of the v-belt
     :type vbelt_model: str
-    :param vbelt_profile: profile of the vbelt, valid values are `A`~`D` for hi_power and `3V`, `5V` and `8V` for super_hc
+    :param vbelt_profile: profile of the vbelt
     :type vbelt_profile: str
-    :param gear_ratio_p: gear ratio for the pulleys in the system
+    :param gear_ratio_p: gear ratio for the pulleys in the system [-]
     :type gear_ratio_p: float
-    :param rpm_fastest: rpm speed of the fastest pulley, rpm
+    :param rpm_fastest: rpm speed of the fastest pulley [rpm]
     :type rpm_fastest: float
-    :return: additional power transmitted, or p_a
+    :return: additional power transmitted, or p_a [hp]
     :rtype: float
+
+    Example
+    -------
+    >>> vbelts.power.additional(vbelt_model='hi_power', vbelt_profile='a', gear_ratio_p=1.05, rpm_fastest=900)
+    0.036667
+    >>> vbelts.power.additional(vbelt_model='super_hc', vbelt_profile='3v', gear_ratio_p=0.8, rpm_fastest=900)
+    0.11
     """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pa'
     if gear_ratio_p < 1:
