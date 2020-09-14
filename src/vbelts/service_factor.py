@@ -1,6 +1,8 @@
-"""Service Factor
+"""
+Service Factor
+==============
 
-This module calculate the service factor for v-belts."""
+"""
 
 import re
 
@@ -52,7 +54,8 @@ drive_group_data = [
 
 
 def _group(entry, comp_list):
-    """Searches the comp_list for the string in the entry and returns the second item
+    """Searches the comp_list for the string in the entry and returns the second item. This is an **internal** function.
+
     :param entry: string for the search
     :type entry: str
     :param comp_list: list of lists that contains the values used on the search
@@ -70,7 +73,8 @@ def _group(entry, comp_list):
         raise ValueError
 
 def _sf_partial(mach_group, service_hours):
-    """Select the partial result for the service factor
+    """Select the partial result for the service factor. This is an **internal** function.
+
     :param mach_group: machine group for the searched entry
     :type mach_group: int
     :param service_hours: hours of service per day of the machine
@@ -109,7 +113,8 @@ def _sf_partial(mach_group, service_hours):
     return sf_part
 
 def _calc(mach_group, drive_group, _sf_p):
-    """Select and calculate the main service factor
+    """Select and calculate the main service factor. This is an **internal** function.
+
     :param mach_group: machine group for a data entry
     :type mach_group: int
     :param drive_group: drive group for a data entry
@@ -138,21 +143,31 @@ def _calc(mach_group, drive_group, _sf_p):
     return round(result, 1)
 
         
-def service_factor(machine:str, drive:str, hours_service:float, mach_list=mach_group_data, drive_list=drive_group_data):
-    """Calculate the service factor based on the machine driven, the drive and hours of service per day
+def service_factor(machine:str, drive:str, hours_service:float):
+    """Calculate the service factor [1]_ based on the machine driven, the drive engine and hours of service per day.
+
     :param machine: type of machine driven, for valid values see the documentation
     :type machine: str
     :param drive: type of drive for the machine, for valid values see the documentation
     :type drive: str
     :param hours_service: hours of service of the system
     :type hours_service: float
-    :param mach_list: valid machine list, defaults to mach_group_data
-    :type mach_list: variable, optional
-    :param drive_list: valid drive list, defaults to drive_group_data
-    :type drive_list: variable, optional
     :return: service factor
     :rtype: float
+
+    Example
+    -------
+    >>> service_factor(machine='centrifugal pump', drive='diesel multiple cylinder', hours_service=8)
+    1.1
+    >>> service_factor(machine='reciprocating compressor', drive='high torque', hours_service=11)
+    1.5
+    
+    References
+    ----------
+    .. [1] Megadyne. 2016."V-BELTS: Rubber V-belts", **Vermeire webshop**. Accessed September 14, 2020, http://shop.vermeire.com/inc/Doc/courroies/megadyne/2016/v_belts_jan_2016.pdf
     """
+    mach_list = mach_group_data
+    drive_list = drive_group_data
     machine_group = _group(machine, mach_list)
     drive_group = _group(drive, drive_list)
     precalc = _sf_partial(machine_group, hours_service)

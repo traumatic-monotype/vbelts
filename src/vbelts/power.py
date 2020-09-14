@@ -1,12 +1,21 @@
-"""Power
+"""
+Power
+=====
 
-Utilities to calculate power transmission through v-belts"""
+"""
 
 from vbelts.util import _read_csv_data, _interpol, OutOfRangeError
 
 
 def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
-    """Power transmission capacity by belt unit
+    """
+    Power transmission capacity by belt unit.
+
+    The formula for belt transmission capacity [1]_, `P_a` is:
+
+    .. math::
+       P_a = (P_b + P_a) * f_{cc} * f_{cac}
+
     :param p_b: basic power, hp
     :type p_b: float
     :param p_a: additional power, hp
@@ -16,13 +25,27 @@ def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
     :param f_cac: contact arc correction factor
     :type f_cac: float
     :return: capacity to transmit power by belt unit
-    :rtype:float
+    :rtype: float
+    
+
+    Example
+    -------
+       >>> power.belt_transmission(p_b=1.5, p_a=0.2, f_cc=1.0, f_cac=0.7)
+       1.19
+
+
+    References
+    ----------
+       .. [1] Oleostatic. 2016. "Correas Trapeciales Convencionales". **Ingineria Mecánica**. Accessed September 14, 2020, http://ocw.uc3m.es/ingenieria-mecanica/diseno-mecanico-1/material_clase/ocw_catalogo_correas
     """
     return (p_b + p_a) * f_cc * f_cac
 
 
 def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:float):
-    """Select the basic power transmitted by belt unit
+    """Select the basic power transmitted by belt unit.
+
+    The valid entries for and `vbelt_profile` are in the :ref:`Data <vbelt_profile_super_hc>` section.  
+
     :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
     :type vbelt_model: str
     :param vbelt_profile: profile of the vbelt, valid values are `A`~`D` for hi_power and `3V`, `5V` and `8V` for super_hc
@@ -33,6 +56,8 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
     :type rpm_fastest: float
     :return: basic power transmitted, or p_b
     :rtype: float
+
+    
     """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pb'
     for line in _read_csv_data(filename_pb):

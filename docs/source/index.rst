@@ -6,13 +6,24 @@
 Welcome to vbelts' documentation!
 ==================================
 
-Welcome to the guide and documentation for the most comprehensive and complete library for v-belt calculation and dimensioning, written in and for python. vbelts is open-source software for engineers and technicians working in mechanical engineering. It includes modules for the most common needs when calculating v-belts.
+Vbelts projects aims to deliver a tool for v-belt calculation and dimensioning, an open-source software for engineers and technicians working in mechanical engineering. It includes modules for the most common needs when calculating v-belts.
 
-**Who is the guide for?**
+Features
+--------
+
+- Profile selection
+- Power estimation
+- Commercial pulley diameter calculation and selection
+- Easily define correct center distance between pulleys
+- Choose the appropriate model and quantity of v-belts
+
+Guide
+-----
 
 If you are a complete beginner trying to calculate a v-belt for your system, the guide will help you with examples and explanations.
 
-**Who is the documentation for?**
+Documentation
+-------------
 
 The docs are a reference for the functions in the package. The documentation contain information that help you understand and use vbelts as easily and pain-free as possible. It is *always* recommended to read the documentation before you use vbelts.
 
@@ -44,13 +55,26 @@ https://github.com/traumatic-monotype/vbelts
 License information
 ===================
 
+vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & conditions for usage of this software, and a DISCLAIMER OF ALL WARRANTIES.
 
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Tutorial:
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Documentation:
+
+   service_factor
+   power
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Data:
 
+   data/vbelt_profile_super_hc
 
 
 Indices and tables
