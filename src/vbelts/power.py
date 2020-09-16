@@ -1,5 +1,5 @@
 """
-Power
+Power  (REVIEW)
 =====
 
 """
@@ -11,38 +11,40 @@ def belt_transmission(p_b:float, p_a: float, f_cc:float, f_cac: float):
     """
     Power transmission capacity by belt unit.
 
-    The formula for belt transmission capacity [1]_, `P_a` is:
+    :param p_b: basic power [hp]
+    :type p_b: float
+    :param p_a: additional power [hp]
+    :type p_a: float
+    :param f_cc: length correction factor [-]
+    :type f_cc: float
+    :param f_cac: contact arc correction factor [-]
+    :type f_cac: float
+    :return: capacity to transmit power by belt unit [hp]
+    :rtype: float
+    
+    Notes
+    -----
+    The formula for belt transmission capacity [#]_, `P_a` is:
 
     .. math::
        P_a = (P_b + P_a) * f_{cc} * f_{cac}
 
-    :param p_b: basic power, hp
-    :type p_b: float
-    :param p_a: additional power, hp
-    :type p_a: float
-    :param f_cc: length correction factor
-    :type f_cc: float
-    :param f_cac: contact arc correction factor
-    :type f_cac: float
-    :return: capacity to transmit power by belt unit
-    :rtype: float
-    
 
-    Example
-    -------
+    Examples
+    --------
        >>> vbelts.power.belt_transmission(p_b=1.5, p_a=0.2, f_cc=1.0, f_cac=0.7)
        1.19
 
 
     References
     ----------
-       .. [1] Oleostatic. 2016. "Correas Trapeciales Convencionales". **Ingineria Mecánica**. Accessed September 14, 2020, http://ocw.uc3m.es/ingenieria-mecanica/diseno-mecanico-1/material_clase/ocw_catalogo_correas
+       .. [#] Oleostatic. 2016. "Correas Trapeciales Convencionales". **Ingineria Mecánica**. Accessed September 14, 2020, http://ocw.uc3m.es/ingenieria-mecanica/diseno-mecanico-1/material_clase/ocw_catalogo_correas
     """
     return (p_b + p_a) * f_cc * f_cac
 
 
 def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:float):
-    """Select the basic power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.  
+    """Select the basic power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.
 
     :param vbelt_model: model of the v-belt
     :type vbelt_model: str
@@ -55,12 +57,20 @@ def basic(vbelt_model:str, vbelt_profile:str, pulley_diam:float, rpm_fastest:flo
     :return: basic power transmitted or p_b [hp]
     :rtype: float
 
-    Example
-    -------
+    Notes
+    -----
+    The data [#]_, is available as a pdf.
+
+    Examples
+    --------
     >>> vbelts.power.basic(vbelt_model='hi_power', vbelt_profile='a', pulley_diam=180, rpm_fastest=900)
     4.35999
     >>> vbelts.power.basic(vbelt_model='super_hc', vbelt_profile='3v', pulley_diam=180, rpm_fastest=900)
     5.02
+
+    References
+    ----------
+       .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf
     """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pb'
     for line in _read_csv_data(filename_pb):
@@ -108,12 +118,20 @@ def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_faste
     :return: additional power transmitted, or p_a [hp]
     :rtype: float
 
-    Example
-    -------
+    Notes
+    -----
+    The data [#]_, is available as a pdf.
+
+    Examples
+    --------
     >>> vbelts.power.additional(vbelt_model='hi_power', vbelt_profile='a', gear_ratio_p=1.05, rpm_fastest=900)
     0.036667
     >>> vbelts.power.additional(vbelt_model='super_hc', vbelt_profile='3v', gear_ratio_p=0.8, rpm_fastest=900)
     0.11
+
+    References
+    ----------
+        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
     """
     filename_pb = f'{vbelt_model}_{vbelt_profile}_pa'
     if gear_ratio_p < 1:
@@ -134,13 +152,29 @@ def additional(vbelt_model:str, vbelt_profile:str, gear_ratio_p:float, rpm_faste
 
 
 def corr_factor(vbelt_model:str, vbelt_type:str):
-    """Selects the appropriate correction factor for belt length
-    :param vbelt_model: model of the v-belt, valid values are `hi_power` and `super_hc`
+    """Selects the appropriate correction factor for belt length. The valid entries for `vbelt_model` are in the :ref:`Data/V-belt Model and Profile <vbelt_model_profile>`, for the `vbelt_type` are in the :ref:`Data/V-belt Type <vbelt_types>`.
+
+    :param vbelt_model: model of the v-belt
     :type vbelt_model: str
-    :param vbelt_type: type of v-belt, for more informatio see the documentation
+    :param vbelt_type: type of v-belt
     :type vbelt_type: str
-    :return: correction factor
+    :return: correction factor [-]
     :rtype: float
+
+    Notes
+    -----
+    The data [#]_, is available as a pdf.
+
+    Examples
+    --------
+    >>> power.corr_factor('super_hc', '3V900')
+    1.07
+    >>> power.corr_factor('hi_power', 'A-32')
+    0.8
+
+    References
+    ----------
+        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.  
     """
     filename_fcc = f'{vbelt_model}_fcc'
     for line in _read_csv_data(filename_fcc):
@@ -149,7 +183,8 @@ def corr_factor(vbelt_model:str, vbelt_type:str):
 
 
 def corr_arc_contact(max_diam:float, min_diam:float, corr_distance_pulleys:float):
-    """Selects the appropriate correction factor for contact arc
+    """Selects the appropriate correction factor for contact arc.
+
     :param max_diam: major diameter for the pulleys in the system, mm
     :type max_diam: float
     :param min_diam: minor diameter for the pulleys in the system, mm
@@ -158,6 +193,19 @@ def corr_arc_contact(max_diam:float, min_diam:float, corr_distance_pulleys:float
     :type corr_distance_pulleys: float
     :return: correction factor for contact arc
     :rtype: float
+
+    Notes
+    -----
+    The data [#]_, is available as a pdf.
+
+    Examples
+    --------
+    >>> power.corr_arc_contact(320, 130, 1100)
+    0.9754545454545455
+
+    References
+    ----------
+       .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf
     """
     factor = (max_diam - min_diam) / corr_distance_pulleys
     last_factor = 0

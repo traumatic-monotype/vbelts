@@ -75,6 +75,7 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    :caption: Data:
 
    data/vbelt_model_profile
+   data/vbelt_types
 
 
 Indices and tables

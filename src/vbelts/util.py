@@ -1,4 +1,4 @@
-"""Utilities"""
+"""Utilities  (REVIEW)"""
 
 import csv
 import os
@@ -11,9 +11,74 @@ class NotValidError(Exception):
     """Raised when the value passed to the function is not valid"""
     pass
 
+
 class ConvergenceError(Exception):
     """Raised when the value passed to an iterator function does not converge"""
     pass
+
+
+class CSVData():
+    def __init__(self, filename:str):
+        self.filename = filename
+    
+    def read(self):
+        # use the full path and pass the file path as filename, OS independent
+        file_path = os.path.join(os.path.dirname(__file__), 'data', self.filename)  # fetch full path
+        with open(f'{file_path}.csv', mode='r', encoding="utf-8") as csv_file:
+            reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)  # not quoted values are floats
+            # next(reader)
+            for line in reader:
+                yield line
+
+
+class Data(CSVData):
+    def __init__(self, filename:str, *row:str):
+        super().__init__(filename)
+        self.row = row
+    
+    def iterate_4rows(self, *param:float):
+        for line in super(Data, self).read():
+            if line[self.row[0]] > param[0]:
+                raise OutOfRangeError('Value out of range for these parameters')
+            elif line[self.row[0]] <= param[0] < line[self.row[1]]:
+                if line[self.row[2]] == param[1]:
+                    return line[self.row[3]]
+                elif line[self.row[2]] > param[1]:
+                    return Interpol(param[1], last_row_2, line[self.row[2]], last_row_3, line[self.row[3]]).y_data()
+            last_row_2 = line[self.row[2]]
+            last_row_3 = line[self.row[3]]
+        raise OutOfRangeError('Value out of range for these parameters')
+
+class Interpol():
+    def __init__(self, x_data, x_min, x_max, y_min, y_max):
+        self.x_data = x_data
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
+    
+    def y_data(self):
+        return self.y_max-((self.x_max - self.x_data)/(self.x_max - self.x_min))*(self.y_max - self.y_min)
+
+
+class MinDist():
+    def __init__(self, x:float, x_min:float, x_max:float):
+        self.x = x
+        self.x_min = x_min
+        self.x_max = x_max
+    
+    def calc(self):
+        dist_1 = (self.x - self.x_min)/self.x
+        dist_2 = (self.x_max - self.x)/self.x
+        if dist_1 < dist_2:
+            return self.x_min
+        elif dist_1 > dist_2:
+            return self.x_max
+        elif dist_1 == dist_2: # if both are equal, return the maximum
+            return self.x_max
+        else:
+            raise ValueError
+
 
 def _read_csv_data(filename:str):
     """Read csv data and return a generator function
