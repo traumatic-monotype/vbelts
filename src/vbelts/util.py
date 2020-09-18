@@ -1,7 +1,55 @@
-"""Utilities  (REVIEW)"""
+"""Utilities"""
 
 import csv
 import os
+import re
+from abc import ABC, abstractmethod
+
+mach_group_data = [
+    ['stirrer', '1'],
+    ['small blower', '1'],
+    ['exhaustor', '1'],
+    ['centrifugal pump', '1'],
+    ['regular compressor', '1'],
+    ['light conveyor belt', '1'],
+    ['heavy conveyor belt', '2'],
+    ['large blower', '2'],
+    ['generator', '2'],
+    ['transmission axle', '2'],
+    ['laundry machine', '2'],
+    ['press', '2'],
+    ['graphical machine', '2'],
+    ['positive displacement pump', '2'],
+    ['sieving machine', '2'],
+    ['pottery machine', '3'],
+    ['bucket elevator', '3'],
+    ['reciprocating compressor', '3'],
+    ['mill', '3'],
+    ['carpentry machine', '3'],
+    ['textile machine', '3'],
+    ['crusher', '4'],
+    ['crane', '4'],
+    ['tire shop machine', '4'],
+]
+
+drive_group_data = [
+    ['normal torque ac', '1'],
+    ['ring cage ac', '1'],
+    ['synchronous ac', '1'],
+    ['phase division ac', '1'],
+    ['derivation dc', '1'],
+    ['multiple cylinders combustion', '1'],
+    ['high torque ac', '2'],
+    ['high slipping ac', '2'],
+    ['repulsion induction ac', '2'],
+    ['monophasic ac', '2'],
+    ['series winding dc', '2'],
+    ['collector rings ac', '2'],
+    ['mixed winding dc', '2'],
+    ['single cylinder combustion', '2'],
+    ['transmission axle', '2'],
+    ['clutch', '2'],
+]
 
 class OutOfRangeError(Exception):
     """Raised when value is out of range of the list"""
@@ -17,39 +65,7 @@ class ConvergenceError(Exception):
     pass
 
 
-class CSVData():
-    def __init__(self, filename:str):
-        self.filename = filename
-    
-    def read(self):
-        # use the full path and pass the file path as filename, OS independent
-        file_path = os.path.join(os.path.dirname(__file__), 'data', self.filename)  # fetch full path
-        with open(f'{file_path}.csv', mode='r', encoding="utf-8") as csv_file:
-            reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)  # not quoted values are floats
-            # next(reader)
-            for line in reader:
-                yield line
-
-
-class Data(CSVData):
-    def __init__(self, filename:str, *row:str):
-        super().__init__(filename)
-        self.row = row
-    
-    def iterate_4rows(self, *param:float):
-        for line in super(Data, self).read():
-            if line[self.row[0]] > param[0]:
-                raise OutOfRangeError('Value out of range for these parameters')
-            elif line[self.row[0]] <= param[0] < line[self.row[1]]:
-                if line[self.row[2]] == param[1]:
-                    return line[self.row[3]]
-                elif line[self.row[2]] > param[1]:
-                    return Interpol(param[1], last_row_2, line[self.row[2]], last_row_3, line[self.row[3]]).y_data()
-            last_row_2 = line[self.row[2]]
-            last_row_3 = line[self.row[3]]
-        raise OutOfRangeError('Value out of range for these parameters')
-
-class Interpol():
+class Interpolate():
     def __init__(self, x_data, x_min, x_max, y_min, y_max):
         self.x_data = x_data
         self.x_min = x_min
@@ -58,6 +74,20 @@ class Interpol():
         self.y_max = y_max
     
     def y_data(self):
+        """Linear interpolation of table data
+        :param x_data: input data point to be calculated
+        :type x_data: float
+        :param x_min: nearest minimum input value in relation to the data point
+        :type x_min: float
+        :param x_max: nearest maximum input value in relation to the data point
+        :type x_max: float
+        :param y_min: nearest minimum output value in the relation to the data point
+        :type y_min: float
+        :param y_max: nearest maximum output value in the relation to the data point
+        :type y_max: float
+        :return: interpolated output data
+        :rtype: float
+        """
         return self.y_max-((self.x_max - self.x_data)/(self.x_max - self.x_min))*(self.y_max - self.y_min)
 
 
@@ -68,6 +98,16 @@ class MinDist():
         self.x_max = x_max
     
     def calc(self):
+        """Nearest value between two items given one value that is in the interval
+        :param x: value on the interval
+        :type x:
+        :param x_min: nearest minimum value on the scale
+        :type x_min: float
+        :param x_max: nearest maximum value on the scale
+        :type x_max:
+        :return: nearest value of the x
+        :rtype: float
+        """
         dist_1 = (self.x - self.x_min)/self.x
         dist_2 = (self.x_max - self.x)/self.x
         if dist_1 < dist_2:
@@ -80,60 +120,145 @@ class MinDist():
             raise ValueError
 
 
-def _read_csv_data(filename:str):
-    """Read csv data and return a generator function
-    :param filename: file name of the csv file without the extension
-    :type filename: str
-    :return: contents of the csv file in an ordered dictionary
-    :rtype: dict
-    """
-    # use the full path and pass the file path as filename, OS independent
-    file_path = os.path.join(os.path.dirname(__file__), 'data', filename)  # fetch full path
-    with open(f'{file_path}.csv', mode='r', encoding="utf-8") as csv_file:
-        reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)  # not quoted values are floats
-        # next(reader)
-        for line in reader:
-            yield line
+class CSV(ABC):  # abstract class
+    @abstractmethod
+    def _read(self): pass
 
 
-def _interpol(x_data:float, x_min:float, x_max:float, y_min:float, y_max:float):
-    """Linear interpolation of table data
-    :param x_data: input data point to be calculated
-    :type x_data: float
-    :param x_min: nearest minimum input value in relation to the data point
-    :type x_min: float
-    :param x_max: nearest maximum input value in relation to the data point
-    :type x_max: float
-    :param y_min: nearest minimum output value in the relation to the data point
-    :type y_min: float
-    :param y_max: nearest maximum output value in the relation to the data point
-    :type y_max: float
-    :return: interpolated output data
-    :rtype: float
-    """
-    return y_max-((x_max - x_data)/(x_max - x_min))*(y_max - y_min)
+class Iterate(CSV):
+    def __init__(self, filename:str, *row:str, interpol:Interpolate=Interpolate, m_dist:MinDist=MinDist):
+        self.filename = filename
+        self.row = row
+        self.interpol = interpol
+        self.m_dist = m_dist
 
-def _min_dist(x:float, x_min:float, x_max:float):
-    """Nearest value between two items given one value that is in the interval
-    :param x: value on the interval
-    :type x:
-    :param x_min: nearest minimum value on the scale
-    :type x_min: float
-    :param x_max: nearest maximum value on the scale
-    :type x_max:
-    :return: nearest value of the x
-    :rtype: float
-    """
-    dist_1 = (x - x_min)/x
-    dist_2 = (x_max - x)/x
-    if dist_1 < dist_2:
-        return x_min
-    elif dist_1 > dist_2:
-        return x_max
-    elif dist_1 == dist_2: # if both are equal, return the maximum
-        return x_max
-    else:
-        raise ValueError
+    def _read(self):
+        """Read csv data and return a generator function
+        :param filename: file name of the csv file without the extension
+        :type filename: str
+        :return: contents of the csv file in an ordered dictionary
+        :rtype: generator
+        """
+        file_path = os.path.join(os.path.dirname(__file__), 'data', self.filename)  # fetch full path
+        with open(f'{file_path}.csv', mode='r', encoding="utf-8") as csv_file:
+            reader = csv.DictReader(csv_file, quoting=csv.QUOTE_NONNUMERIC)  # not quoted values are floats
+            # next(reader)
+            for line in reader:
+                yield line
+    
+
+    def fcc(self, vbelt_model:str, vbelt_type:str):
+        self.filename = f'{vbelt_model}_fcc'
+        for line in self._read():
+            if line['type'] == vbelt_type:
+                return float(line['fcc'])
+
+    
+    def four_rows(self, *param:float):
+        for line in self._read():
+            if line[self.row[0]] > param[0]:
+                raise OutOfRangeError('Value out of range for these parameters')
+            elif line[self.row[0]] <= param[0] < line[self.row[1]]:
+                if line[self.row[2]] == param[1]:
+                    return line[self.row[3]]
+                elif line[self.row[2]] > param[1]:
+                    return self.interpol(param[1], last_row_2, line[self.row[2]], last_row_3, line[self.row[3]]).y_data()
+            last_row_2 = line[self.row[2]]
+            last_row_3 = line[self.row[3]]
+        raise OutOfRangeError('Value out of range for these parameters')
+
+    
+    def belt_type(self, *param:float):
+        for line in self._read():
+            if line[self.row[0]] == param[0]:
+                last_length = 0
+                if line[self.row[1]] == param[1]:  # if length == length on data
+                    return (line[self.row[1]], line[self.row[2]])
+                elif line[self.row[1]] > param[1]:
+                    chosed_length = self.m_dist(param[1], last_length, line[self.row[1]]).calc()
+                    # check what length and type was chosen and return them
+                    if chosed_length == line[self.row[1]]:
+                        chosed_type = line[self.row[2]]
+                    else:
+                        chosed_type = last_type
+                    return (chosed_length, chosed_type)
+            last_length = line[self.row[1]]
+            last_type = line[self.row[2]]
+        raise OutOfRangeError('Value out of range for these')
+
+
+class Device():
+    def __init__(self, name:str, li_group:list):
+        self.name = name
+        self.li_group = li_group
+        self.group = self.grp()
+    
+
+    def grp(self):
+        data_regex = re.compile(r'(\w+).?(\w+)?.?(\w+)?')
+        try:
+            for item in self.li_group:
+                m = data_regex.search(item[0])  # search the first item
+                if self.name in m.group(0):
+                    return int(item[1])
+        except:  # stop the execution if nothing is found
+            raise ValueError
+
+
+class Motor(Device):
+    def __init__(self, name:str, power:float, li_group:list=drive_group_data):
+        super().__init__(name, li_group)
+        self.power = power
+
+
+class Machine(Device):
+    def __init__(self, name:str, hours_service:float, li_group:list=mach_group_data):
+        super().__init__(name, li_group)
+        self.hours_service = hours_service
+
+
+class Belt():
+    def __init__(self, est_power:float, rpm_fastest:float):
+        self.est_power = est_power
+        self.rpm_fastest = rpm_fastest
+
+
+    def _fun_val(self, a:float, b:float, c:float, x:float, upper:float):
+        """X for a mathematical function with a linear (ax + b) and a constant part
+        :param a: a coefficient for the linear part of the function
+        :type a: float
+        :param b: b coefficient for the linear part of the function
+        :type b: float
+        :param c: y value for the constant part of the function
+        :type c: float
+        :param x: input value of x
+        :type x: float
+        :param upper: upper limit of the linear function in the y axis
+        :type upper: float
+        :return: y value for the math function
+        :rtype: float
+        """
+        if x < upper:
+            eq = a * x + b
+            return abs(eq)
+        # if the value is within the constant range
+        elif x >= upper:
+            eq = c
+            return eq
+
+
+class Pulley(ABC):
+    def __init__(self, diam, vbelt_profile:str, power:float, rpm:float, iterator:Iterate=Iterate):
+        self.diam = diam
+        self.vbelt_profile = vbelt_profile
+        self.power = power
+        self.rpm = rpm
+        self.filename = f'{self.vbelt_profile}_diam'
+        self.iterator = iterator
+
+    @abstractmethod
+    def min_diam(self): pass
+
 
 def gear_ratio(rpm_input:float, rpm_output:float):
     """Pulley gear ratio
@@ -150,26 +275,11 @@ def gear_ratio(rpm_input:float, rpm_output:float):
         raise ValueError
 
 
-def est_power(engine_power:float, serv_factor:float):
-    """Estimated power to run the pulley system
-    :param engine_power: engine power, hp
-    :type engine_power: float
-    :param serv_factor: calculated service factor
-    :type serv_factor: float
-    :return: estimated power, hp
-    :rtype: float
-    """
-    if isinstance(engine_power, (float, int)) and isinstance(serv_factor, (float, int)):
-        return engine_power * serv_factor
-    else:
-        raise ValueError
-
-
 def belt_qty(est_power_system:float, belt_transmission_capacity:float):
     """Number of belts to transmit the estimated power
     :param est_power_system: estimated power to run the pulley system, hp
     :type est_power_system: float
-    :param belt_transmission_capacity: power transmission capacity per chosen belt model and conditions
+    :param belt_transmission_capacity: power transmission capacity per chosen belt profile and conditions
     :type belt_transmission_capacity: float
     :return: number of belts required
     :rtype: float
