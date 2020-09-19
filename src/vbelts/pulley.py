@@ -72,6 +72,7 @@ class Driven(Pulley):
         return [diam_out, gear_ratio_calc, self.rpm, rpm_out]
 
 
+
 class Driving(Pulley):
     def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, iterator:Iterate=Iterate):
         super().__init__(diam, vbelt_profile, power, rpm, iterator)

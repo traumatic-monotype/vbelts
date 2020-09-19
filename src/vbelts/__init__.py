@@ -33,7 +33,7 @@ from . import length
 from . import util
 from . import power
 from . import speed
-from . import force
+# from . import force
 from . import pulley
 
 from .belt import *
@@ -41,5 +41,5 @@ from .length import *
 from .util import *
 from .power import *
 from .speed import *
-from .force import *
+# from .force import *
 from .pulley import *

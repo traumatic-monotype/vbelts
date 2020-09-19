@@ -122,7 +122,7 @@ class MinDist():
 
 class CSV(ABC):  # abstract class
     @abstractmethod
-    def _read(self): pass
+    def read(self): pass
 
 
 class Iterate(CSV):
@@ -132,7 +132,7 @@ class Iterate(CSV):
         self.interpol = interpol
         self.m_dist = m_dist
 
-    def _read(self):
+    def read(self):
         """Read csv data and return a generator function
         :param filename: file name of the csv file without the extension
         :type filename: str
@@ -149,13 +149,50 @@ class Iterate(CSV):
 
     def fcc(self, vbelt_model:str, vbelt_type:str):
         self.filename = f'{vbelt_model}_fcc'
-        for line in self._read():
+        for line in self.read():
             if line['type'] == vbelt_type:
                 return float(line['fcc'])
 
     
+    def three_rows(self, *param:float):
+        """Iterate through a file with a list of three rows using two parameters and return the last one, interpolated or not
+        """
+        for line in self.read():
+            if line[self.row[0]] == param[0]:
+                if line[self.row[1]] == param[1]:
+                    return (line[self.row[2]], False)  # first return the value, second need for adjusting, used in TransPower._basic()
+                elif line[self.row[1]] > param[1]:
+                    return (self.interpol(param[1], last_row_1, line[self.row[1]], last_row_2, line[self.row[2]]).y_data(), False)
+            elif line[self.row[0]] > param[0]:
+                if line[self.row[1]] == param[1]:
+                    return (self.interpol(param[1], last_row_1, line[self.row[1]], last_row_2, line[self.row[2]]).y_data(), True)
+                elif line[self.row[1]] > param[1]:
+                    return (self.interpol(), True)
+            last_row_1 = line[self.row[1]]
+            last_row_2 = line[self.row[2]]
+        raise OutOfRangeError('Value out of range for these parameters')
+
+
+    def three_rows_choose(self, param, w_row:float):
+        """Iterate through a file with a list of three rows using one parameter, chosing which row to use to return the value.
+        """
+        w_row -= 1
+        last_row_1 = 0
+        last_row_chosed = 0
+        for line in self.read():
+            if line[self.row[0]] == param:
+                return line[self.row[w_row]]
+            elif line[self.row[0]] > param:
+                return self.interpol(param, last_row_1, line[self.row[0]], last_row_chosed, line[self.row[w_row]]).y_data()
+            last_row_1 = line[self.row[0]]
+            last_row_chosed = line[self.row[w_row]]
+        raise OutOfRangeError('Value out of range for these parameters')
+
+
     def four_rows(self, *param:float):
-        for line in self._read():
+        """Iterate through a file with a list of four rows using two parameters, the first two are a range, and return the last, interpolated or not.
+        """
+        for line in self.read():
             if line[self.row[0]] > param[0]:
                 raise OutOfRangeError('Value out of range for these parameters')
             elif line[self.row[0]] <= param[0] < line[self.row[1]]:
@@ -169,7 +206,7 @@ class Iterate(CSV):
 
     
     def belt_type(self, *param:float):
-        for line in self._read():
+        for line in self.read():
             if line[self.row[0]] == param[0]:
                 last_length = 0
                 if line[self.row[1]] == param[1]:  # if length == length on data
@@ -256,8 +293,8 @@ class Pulley(ABC):
         self.filename = f'{self.vbelt_profile}_diam'
         self.iterator = iterator
 
-    @abstractmethod
-    def min_diam(self): pass
+    # @abstractmethod
+    # def min_diam(self): pass
 
 
 def gear_ratio(rpm_input:float, rpm_output:float):
@@ -273,15 +310,3 @@ def gear_ratio(rpm_input:float, rpm_output:float):
         return rpm_input/rpm_output
     else:
         raise ValueError
-
-
-def belt_qty(est_power_system:float, belt_transmission_capacity:float):
-    """Number of belts to transmit the estimated power
-    :param est_power_system: estimated power to run the pulley system, hp
-    :type est_power_system: float
-    :param belt_transmission_capacity: power transmission capacity per chosen belt profile and conditions
-    :type belt_transmission_capacity: float
-    :return: number of belts required
-    :rtype: float
-    """
-    return est_power_system/belt_transmission_capacity

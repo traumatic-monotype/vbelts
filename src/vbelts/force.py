@@ -4,6 +4,10 @@ from math import pi, exp
 from vbelts.util import _read_csv_data, Iterate, Interpolate, OutOfRangeError
 
 
+
+
+
+
 def torque(power:float, rpm_pulley:float):
     """Torque on the pulley
     :param power: power of the system, hp

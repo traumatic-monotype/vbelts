@@ -33,7 +33,7 @@ class Dist():
         self.l_uncorr = 2 * self.center_uncorr + 1.57 * (self.maj_diam + self.min_diam) + ((self.maj_diam - self.min_diam)**2/(4 * self.center_uncorr))
 
 
-class PulleyBelt(Dist):
+class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
     def __init__(self, min_diam:float, maj_diam:float, belt:str, b_profile:str, iterator:Iterate=Iterate, interpol:Interpolate=Interpolate):  # inject the objects inside the class
         super().__init__(min_diam, maj_diam)
         self.belt = belt
