@@ -78,6 +78,8 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
 
    data/vbelt_model_profile
    data/vbelt_types
+   data/vbelt_length
+   data/vbelt_h_factor
 
 
 Indices and tables

@@ -1,8 +1,6 @@
 """
 Length
 ======
-
-Parei nesse
 """
 
 from vbelts.util import Interpolate, Iterate, OutOfRangeError
@@ -43,13 +41,6 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
     b_profile : str
         Belt profile, [-]
     
-    Methods
-    -------
-    l_c()
-        Returns the corrected belt length and belt type, [mm] [-]
-    c_c()
-        Returns the corrected center distance, [mm]
-    
     Attributes
     ----------
     l_corr : float
@@ -66,10 +57,11 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
 
     Examples
     --------
-    >>> dist = vbelts.length.PulleyBelt(130, 240, 'HiPower', 'a')
+    >>> dist = vbelts.length.PulleyBelt(120, 240, 'HiPower', 'a')
     >>> dist.l_c()
-
+    (1200, 'A-46')
     >>> dist.c_c()
+    310.72814411208714
 
     References
     ----------
@@ -84,22 +76,52 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
         self.interpol = interpol
         self.corr_dict = h_factor
         self._l_c()
-        self._h_factor()
         self._l_a()
+        self._h_factor()
 
 
     def _l_c(self):
-        """Calculates the corrected v-belt length and type"""
+        """Calculates the corrected v-belt length and type."""
         self.l_corr, self.b_type = self.iterator(f'{self.belt}_length', 'profile', 'length', 'type').belt_type(self.b_profile, self.l_uncorr)
     
 
     def l_c(self):
+        r"""Belt commercial length and v-belt type.
+
+        Returns
+        -------
+        l_corr : float
+            Length of the commercial belt chosen, [mm]
+        b_type : str
+            Commercial v-belt type, [-]
+
+        Notes
+        -----
+        The return product is a tuple with both values.
+
+        The calculation and selection of the type depends on a number of secundary factors, all available online [#]_.
+        First, the pulley center distance uncorrected, `C`, is calculated based on the major `D` and minor `d` pulley diameters:
+
+        .. math::
+            C = \frac{3 \cdot d + D}{2}
+
+        Second, the uncorrected length of the belt, `l` is calculated:
+
+        .. math::
+            l = 2 \cdot C + 1.57 \cdot (D + d) + \frac{(D - d)**2}{4 \cdot C}
+
+        Third, the corrected commercial length of the v-belt, `l_c` is selected based on the v-belt model and uncorrected length `l`. Please see the :ref:`Data <vbelt_length_data>` for all models in the module.
+
+        References
+        ----------
+        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
+        """
         return (self.l_corr, self.b_type)
     
     
     def _h_factor(self):
-        """Calculates and selects the appropriate correction factor for the center distance between pulleys"""
-        adim_factor = (self.maj_diam - self.min_diam)/self.l_corr
+        """Calculates and selects the appropriate correction factor for the center distance between pulleys."""
+        adim_factor = (self.maj_diam - self.min_diam)/self._l_adj
         for key in self.corr_dict:
             last_factor = 0
             if key == adim_factor:
@@ -107,27 +129,40 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
             elif key > adim_factor:
                 self._h = self.interpol(adim_factor, last_factor, key, self.corr_dict.get(last_factor), self.corr_dict.get(key)).y_data()
             last_factor = key
-        if self._h == None:
+        if self._h is None:
             raise OutOfRangeError('Value out of range for these parameters')
 
 
     def _l_a(self):
-        """Corrected belt length for commercial belts"""
-        self._l_adj = self.l_corr - 1.57 * (self.maj_diam - self.min_diam)
+        """Corrected belt length for commercial belts."""
+        self._l_adj = self.l_corr - 1.57 * (self.maj_diam + self.min_diam)
     
 
     def c_c(self):
-        """Corrected center distance for commercial belts
-        :param l_a: corrected belt length, mm
-        :type l_a: float
-        :param h: correction factor for the center distance between pulleys
-        :type: float
-        :param max_diam: major diameter of the pulleys, mm
-        :type max_diam: float
-        :param min_diam: minor diameter of the pulleys, mm
-        :type min_diam: float
-        :return: corrected center distance between the pulleys, mm
-        :rtype: float
+        r"""Corrected pulley center distance for commercial belts.
+
+        Returns
+        -------
+        c_corr : float
+            Corrected center distance between the pulleys, [mm]
+        
+        Notes
+        -----
+        The calculation [#]_ demands the adjusted length of the belt, `l_a`, the major pulley diameter `D` and the minor pulley diameter `d`.
+        First, the ratio below is calculated:
+
+        .. math::
+            \frac{D-d}{l_a}
+
+        Second, from a list of correction factors for center distances, `h` is selected. Please see the :ref:`Data section <vbelt_h_factor_data>` for the complete list.
+        Third and finally, the adjusted center distance is defined:
+
+        .. math::
+            C_c = \frac{l_a - h \cdot (D - d)}{2}
+
+        References
+        ----------
+         .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
         """
         self.c_corr = (self._l_adj - self._h *(self.maj_diam - self.min_diam))/2
         return self.c_corr

@@ -26,11 +26,6 @@ class EstPower():
     service_factor : float
         Service factor of the system
     
-    Methods
-    -------
-    calc()
-        Calculates the estimated power.
-    
     Notes
     -----
     The service factor data [#]_ is available online.
@@ -150,11 +145,6 @@ class TransPower():
         Largest pulley, [mm]
     rpm : float
         Fastest axle rotation speed, [rpm]
-    
-    Methods
-    -------
-    calc()
-        Calculates the number of belts needed.
     
     Notes
     -----

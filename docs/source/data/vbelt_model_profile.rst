@@ -8,7 +8,7 @@ V-belt model
 ------------
 
 .. csv-table:: V-belt model and data entries for module functions
-    :header: "model", "data entry"
+    :header: "Model", "Data entry"
     :widths: 20, 20
 
     "Super-HC", "`SuperHC`"
@@ -19,7 +19,7 @@ V-belt profile
 --------------
 
 .. csv-table:: V-Belts profiles and data entries for the module functions
-    :header: "model", "profile", "data entry"
+    :header: "Model", "Profile", "Data entry"
     :widths: 20, 20, 20
 
     "Super-HC", "3V", "`3v`"
