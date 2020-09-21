@@ -1,5 +1,5 @@
 """
-Power  (REVIEW)
+Power
 =====
 
 """
@@ -8,7 +8,47 @@ from vbelts.util import Iterate, OutOfRangeError
 
 
 class EstPower():
-    def __init__(self, engine_power, drive_group, machine_group, hours_service):
+    r"""EstPower class calculates the estimated power to run the pulley system.
+
+    Parameters
+    ----------
+    engine_power : float
+        Engine power, [hp]
+    drive_group : int
+        Engine group classifier, [-]
+    machine_group : int
+        Machine group classifier, [-]
+    hours_service : float
+        Amount of hours per day that the system is on, [h]
+    
+    Attributes
+    ----------
+    service_factor : float
+        Service factor of the system
+    
+    Methods
+    -------
+    calc()
+        Calculates the estimated power.
+    
+    Notes
+    -----
+    The service factor data [#]_ is available online.
+
+    Examples
+    --------
+    >>> est_power = vbelts.power.EstPower(2, 1, 1, 4)
+    >>> est_power.calc()
+    2
+    >>> est_power2 = vbelts.power.EstPower(2, 2, 4, 18)
+    >>> est_power2.calc()
+    3.6
+
+    References
+    ----------
+    .. [#] Megadyne. 2016."V-BELTS: Rubber V-belts", **Vermeire webshop**. Accessed September 14, 2020, http://shop.vermeire.com/inc/Doc/courroies/megadyne/2016/v_belts_jan_2016.pdf
+    """
+    def __init__(self, engine_power:float, drive_group:int, machine_group:int, hours_service:float):
         self.engine_power = engine_power
         self.drive_group = drive_group
         self.machine_group = machine_group
@@ -17,27 +57,7 @@ class EstPower():
     
 
     def _sf(self):
-        """Calculate the service factor [1]_ based on the machine driven, the drive engine and hours of service per day.
-
-        :param machine: type of machine driven, for valid values see the documentation
-        :type machine: str
-        :param drive: type of drive for the machine, for valid values see the documentation
-        :type drive: str
-        :param hours_service: hours of service of the system
-        :type hours_service: float
-        :return: service factor
-        :rtype: float
-
-        Example
-        -------
-        >>> service_factor(machine='centrifugal pump', drive='diesel multiple cylinder', hours_service=8)
-        1.1
-        >>> service_factor(machine='reciprocating compressor', drive='high torque', hours_service=11)
-        1.5
-        
-        References
-        ----------
-        .. [1] Megadyne. 2016."V-BELTS: Rubber V-belts", **Vermeire webshop**. Accessed September 14, 2020, http://shop.vermeire.com/inc/Doc/courroies/megadyne/2016/v_belts_jan_2016.pdf
+        r"""Method selects and calculates the service factor.
         """
         # calculate service_factor partial
         if self.machine_group == 1:
@@ -85,23 +105,71 @@ class EstPower():
                 result = sf_part + 0.3
         else:
             result = sf_part
-        self.service_factor = result
+        self._service_factor = round(result,1)
 
     
     def calc(self):
-        """Estimated power to run the pulley system
-        :param engine_power: engine power, hp
-        :type engine_power: float
-        :param serv_factor: calculated service factor
-        :type serv_factor: float
-        :return: estimated power, hp
-        :rtype: float
+        r"""Estimated power to run the pulley system.
+
+        Returns
+        -------
+        pp : float
+            Estimated power, [hp]
+        
+        Notes
+        -----
+        The equation to calculate the estimated power, using the engine power $P_{engine}$ and the service factor $F_s$:
+
+        .. math::
+            P_p = P_{engine} \cdot F_s
         """
-        pp = self.engine_power * self.service_factor
+        pp = self.engine_power * self._service_factor
         return pp
 
 
 class TransPower():
+    """TransPower class calculates the quantity of belts needed to ensure the power of the system.
+
+    Parameters
+    ----------
+    vbelt_model : str
+        Model of the v-belt, [-]
+    vbelt_profile : str
+        Profile of the v-belt, [-]
+    vbelt_type : str
+        Type of the v-belt, [-]
+    est_power : float
+        Estimated power, [hp]
+    gear_ratio : float
+        Pulley system gear ratio, [-]
+    belt_length_corr : float
+        Corrected belt length, [-]
+    min_diam : float
+        Smallest pulley, [mm]
+    maj_diam : float
+        Largest pulley, [mm]
+    rpm : float
+        Fastest axle rotation speed, [rpm]
+    
+    Methods
+    -------
+    calc()
+        Calculates the number of belts needed.
+    
+    Notes
+    -----
+    All the information [#]_ is available online. The valid entries for `vbelt_model`, `vbelt_profile` and `vbelt_type` are in the :ref:`Model Profile <vbelt_model_profile>` and in the :ref:`Types <vbelt_types>` of the data section.
+
+    Examples
+    --------
+    >>> trans_power = vbelts.power.TransPower('HiPower', 'a', 'A-32', 2, 130/240, 850, 130, 240, 1750)
+    >>> trans_power.calc()
+    0.5060451558976288
+
+    References
+    ----------
+    .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
+    """
     def __init__(self, vbelt_model:str, vbelt_profile:str, vbelt_type:str, est_power:float, gear_ratio:float, belt_length_corr:float, min_diam:float, maj_diam:float, rpm:float, iterator:Iterate=Iterate):
         self.b_model = vbelt_model
         self.b_profile = vbelt_profile
@@ -113,191 +181,78 @@ class TransPower():
         self.maj_diam = maj_diam
         self.rpm = rpm
         self.iterator = iterator
-        self._fcc()
+        self._fc_length()
         self._basic()
         self._additional()
-        self._fcac()
+        self._fc_arc()
     
 
-    def _fcc(self):
-        """Selects the appropriate correction factor for belt length. The valid entries for `vbelt_model` are in the :ref:`Data/V-belt Model and Profile <vbelt_model_profile>`, for the `vbelt_type` are in the :ref:`Data/V-belt Type <vbelt_types>`.
-
-        :param vbelt_model: model of the v-belt
-        :type vbelt_model: str
-        :param vbelt_type: type of v-belt
-        :type vbelt_type: str
-        :return: correction factor [-]
-        :rtype: float
-
-        Notes
-        -----
-        The data [#]_, is available as a pdf.
-
-        Examples
-        --------
-        >>> power.corr_factor('super_hc', '3V900')
-        1.07
-        >>> power.corr_factor('hi_power', 'A-32')
-        0.8
-
-        References
-        ----------
-            .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf."""
+    def _fc_length(self):
+        """Selects the appropriate correction factor for belt length."""
         filename_fcc = f'{self.b_model}_fcc'
         for line in self.iterator(filename_fcc).read():
             if line['type'] == self.b_type:
-                self.fcc = float(line['fcc'])
+                self._fcc = float(line['fcc'])
     
 
     def _basic(self):
-        """Select the basic power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.
-        
-        :param vbelt_model: model of the v-belt
-        :type vbelt_model: str
-        :param vbelt_profile: profile of the vbelt
-        :type vbelt_profile: str
-        :param pulley_diam: main diameter of the smallest pulley [mm]
-        :type pulley_diam: float
-        :param rpm_fastest: rpm speed of the fastest pulley [rpm]
-        :type rpm_fastest: float
-        :return: basic power transmitted or p_b [hp]
-        :rtype: float
-
-        Notes
-        -----
-        The data [#]_, is available as a pdf.
-
-        Examples
-        --------
-        >>> vbelts.power.basic(vbelt_model='hi_power', vbelt_profile='a', pulley_diam=180, rpm_fastest=900)
-        4.35999
-        >>> vbelts.power.basic(vbelt_model='super_hc', vbelt_profile='3v', pulley_diam=180, rpm_fastest=900)
-        5.02
-
-        References
-        ----------
-        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf
-        """
+        """Select the basic power transmitted by belt unit."""
         filename_pb = f'{self.b_model}_{self.b_profile}_pb'
         temp_result, adjust = self.iterator(filename_pb, 'diameter', 'rpm', 'power_b').three_rows(self.min_diam, self.rpm)
         # result adjusting for interpolation
         if adjust:
             if 0.3 < temp_result <= 1:
-                self.p_basic = temp_result - 0.25
+                self._p_basic = temp_result - 0.25
             elif 1 < temp_result <= 10:
-                self.p_basic = temp_result - 0.5
+                self._p_basic = temp_result - 0.5
             elif 10 < temp_result <= 120:
-                self.p_basic = temp_result - 2.5
+                self._p_basic = temp_result - 2.5
         else:
             self.p_basic = temp_result
     
 
     def _additional(self):
-        """Selects the additional power transmitted by belt unit. The valid entries for `vbelt_model` and `vbelt_profile` are in the :ref:`Data <vbelt_model_profile>` section.
-
-        :param vbelt_model: model of the v-belt
-        :type vbelt_model: str
-        :param vbelt_profile: profile of the vbelt
-        :type vbelt_profile: str
-        :param gear_ratio_p: gear ratio for the pulleys in the system [-]
-        :type gear_ratio_p: float
-        :param rpm_fastest: rpm speed of the fastest pulley [rpm]
-        :type rpm_fastest: float
-        :return: additional power transmitted, or p_a [hp]
-        :rtype: float
-
-        Notes
-        -----
-        The data [#]_, is available as a pdf.
-
-        Examples
-        --------
-        >>> vbelts.power.additional(vbelt_model='hi_power', vbelt_profile='a', gear_ratio_p=1.05, rpm_fastest=900)
-        0.036667
-        >>> vbelts.power.additional(vbelt_model='super_hc', vbelt_profile='3v', gear_ratio_p=0.8, rpm_fastest=900)
-        0.11
-
-        References
-        ----------
-            .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
-        """
+        """Selects the additional power transmitted by belt unit."""
         filename_pa = f'{self.b_model}_{self.b_profile}_pa'
         # checking if gear_ratio is below one and adjust
         if self.gear_ratio < 1:
             gear_ratio_corr = 1/self.gear_ratio
         else:
             gear_ratio_corr = self.gear_ratio
-        self.p_add = self.iterator(filename_pa, 'gr_low', 'gr_high', 'rpm', 'power_a').four_rows(gear_ratio_corr, self.rpm)
+        self._p_add = self.iterator(filename_pa, 'gr_low', 'gr_high', 'rpm', 'power_a').four_rows(gear_ratio_corr, self.rpm)
 
 
-    def _fcac(self):
-        """Selects the appropriate correction factor for contact arc.
-
-        :param max_diam: major diameter for the pulleys in the system, mm
-        :type max_diam: float
-        :param min_diam: minor diameter for the pulleys in the system, mm
-        :type min_diam: float
-        :param corr_distance_pulleys: corrected distance between the pulley's center, mm
-        :type corr_distance_pulleys: float
-        :return: correction factor for contact arc
-        :rtype: float
-
-        Notes
-        -----
-        The data [#]_, is available as a pdf.
-
-        Examples
-        --------
-        >>> power.corr_arc_contact(320, 130, 1100)
-        0.9754545454545455
-
-        References
-        ----------
-        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf
-        """
+    def _fc_arc(self):
+        """Selects the appropriate correction factor for contact arc."""
         factor = (self.maj_diam - self.min_diam) / self.l_corr
-        self.fcac = self.iterator('fcac_contact_arc', 'factor', 'contact_arc', 'fcac').three_rows_choose(factor, 3)
+        self._fcac = self.iterator('fcac_contact_arc', 'factor', 'contact_arc', 'fcac').three_rows_choose(factor, 3)
 
 
     def belt_qty(self):
-        """Power transmission capacity by belt unit.
+        r"""Number of v-belts needed to transmit the estimated power.
 
-        :param p_b: basic power [hp]
-        :type p_b: float
-        :param p_a: additional power [hp]
-        :type p_a: float
-        :param f_cc: length correction factor [-]
-        :type f_cc: float
-        :param f_cac: contact arc correction factor [-]
-        :type f_cac: float
-        :return: capacity to transmit power by belt unit [hp]
-        :rtype: float
+        Returns
+        -------
+        b_qty : float
+            Quantity of v-belts, [-]
         
+
         Notes
         -----
-        The formula for belt transmission capacity [#]_, `P_a` is:
+        Before calculate the belt quantity, the transmitted power $P_t$ in horse-power has to be calculated [#]_ by:
 
         .. math::
-        P_a = (P_b + P_a) * f_{cc} * f_{cac}
+            P_t = (P_b + P_a) \cdot f_{cc} \cdot f_{cac}
 
+        Where $P_b$ is the basic power transmitted, $P_a$ is the additional power transmitted, $f_{cc}$ is the length correction factor and $f_{cac}$ is the contact arc correction factor.
+        Then, the belt quantity is calculated [#]_ by:
 
-        Examples
-        --------
-        >>> vbelts.power.belt_transmission(p_b=1.5, p_a=0.2, f_cc=1.0, f_cac=0.7)
-        1.19
-
+        .. math::
+            N_{v-belt} = \frac{P_{estimated}}{P_t}
 
         References
         ----------
-        .. [#] Oleostatic. 2016. "Correas Trapeciales Convencionales". **Ingineria Mecánica**. Accessed September 14, 2020, http://ocw.uc3m.es/ingenieria-mecanica/diseno-mecanico-1/material_clase/ocw_catalogo_correas
+        .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
         """
-        belt_transmission_capacity = (self.p_basic + self.p_add) * self.fcc * self.fcac
-        """Number of belts to transmit the estimated power
-        :param est_power_system: estimated power to run the pulley system, hp
-        :type est_power_system: float
-        :param belt_transmission_capacity: power transmission capacity per chosen belt profile and conditions
-        :type belt_transmission_capacity: float
-        :return: number of belts required
-        :rtype: float
-        """
+        belt_transmission_capacity = (self._p_basic + self._p_add) * self._fcc * self._fcac
         return self.est_power / belt_transmission_capacity

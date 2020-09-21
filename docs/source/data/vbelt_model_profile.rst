@@ -11,8 +11,8 @@ V-belt model
     :header: "model", "data entry"
     :widths: 20, 20
 
-    "Super-HC", "`super_hc`"
-    "Hi-Power 2", "`hi_power`"
+    "Super-HC", "`SuperHC`"
+    "Hi-Power 2", "`HiPower`"
 
 
 V-belt profile

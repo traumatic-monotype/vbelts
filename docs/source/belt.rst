@@ -1,6 +1,6 @@
-.. _power_module:
+.. _belt_module:
 
-.. automodule:: vbelts.power
+.. automodule:: vbelts.belt
    :members:
    :undoc-members:
    :show-inheritance:

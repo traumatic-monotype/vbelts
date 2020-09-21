@@ -66,8 +66,10 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    :maxdepth: 3
    :caption: Documentation:
 
-   service_factor
+   speed
+   belt
    power
+   length
 
 
 .. toctree::
