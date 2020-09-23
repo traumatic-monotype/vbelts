@@ -12,3 +12,10 @@ recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs Makefile
+
+# added by check_manifest.py
+recursive-include docs *.rst
+
+# added by check_manifest.py
+recursive-include vbelts *.csv
+recursive-include vbelts *.py

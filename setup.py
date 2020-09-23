@@ -6,12 +6,12 @@ with open("README.md", "r") as fh:
 setup(
     # Mandatory and initial setup
     name='vbelts',
-    version='0.3.0',
+    version='0.3.1',
     description='Utilities for v-belt dimensioning',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    package_dir={'': 'src'},
-    packages=find_packages(where='src'),
+    package_dir={'': 'vbelts'},
+    packages=find_packages(where='vbelts'),
     package_data={'':["data/*.csv"]},
     include_package_data=True,
     author='Glademir Karpinski Junior, Hector Balke Nodari',

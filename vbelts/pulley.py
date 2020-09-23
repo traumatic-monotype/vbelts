@@ -1,8 +1,3 @@
-"""
-Pulley
-======
-"""
-
 from vbelts.util import _Pulley, _Iterate, _ConvergenceError
 from time import time
 

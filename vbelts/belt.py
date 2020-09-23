@@ -1,9 +1,3 @@
-"""
-Belt
-====
-
-"""
-
 from vbelts.util import _Belt, _OutOfRangeError
 
 class HiPower(_Belt):

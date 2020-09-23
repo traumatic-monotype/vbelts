@@ -1,9 +1,3 @@
-"""
-Utilities
-=========
-
-"""
-
 import csv
 import os
 import re

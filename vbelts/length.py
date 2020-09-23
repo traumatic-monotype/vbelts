@@ -1,8 +1,3 @@
-"""
-Length
-======
-"""
-
 from vbelts.util import _Interpolate, _Iterate, _OutOfRangeError
 from abc import ABC
 

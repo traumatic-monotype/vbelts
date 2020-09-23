@@ -10,9 +10,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../../src/vbelts'))
+import os, sys
+sys.path.insert(0, os.path.abspath('../..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +21,7 @@ copyright = '2020, Glademir Karpinski Junior, Hector Balke Nodari'
 author = 'Glademir Karpinski Junior, Hector Balke Nodari'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.0-beta'
+release = '0.3.1-beta'
 
 
 # -- General configuration ---------------------------------------------------

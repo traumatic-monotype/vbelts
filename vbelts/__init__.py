@@ -28,13 +28,13 @@ vbelts provides functions that allow the computation of complex factors in v-bel
 
 import os
 
-from . import belt
-from . import length
-from . import util
-from . import power
-from . import speed
+from vbelts import belt
+from vbelts import length
+from vbelts import util
+from vbelts import power
+from vbelts import speed
 # from . import force
-from . import pulley
+from vbelts import pulley
 
 from .belt import *
 from .length import *

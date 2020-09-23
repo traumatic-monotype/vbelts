@@ -1,9 +1,3 @@
-"""
-Power
-=====
-
-"""
-
 from vbelts.util import _Iterate, _OutOfRangeError
 
 

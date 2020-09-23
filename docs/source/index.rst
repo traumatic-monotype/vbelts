@@ -68,13 +68,7 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    :maxdepth: 3
    :caption: Documentation:
 
-   speed
-   belt
-   power
-   length
-   pulley
-   util
-
+   modules
 
 .. toctree::
    :maxdepth: 2
