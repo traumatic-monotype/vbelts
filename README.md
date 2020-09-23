@@ -18,7 +18,7 @@ If you are a complete beginner trying to calculate a v-belt for your system, the
 
 ## Documentation
 
-The [docs]() are a reference for the functions in the package. The documentation contain information that help you understand and use vbelts as easily and pain-free as possible. It is *always* recommended to read the documentation before you use vbelts.
+The [docs](https://vbelts.readthedocs.io/en/latest/) are a reference for the functions in the package. The documentation contain information that help you understand and use vbelts as easily and pain-free as possible. It is *always* recommended to read the documentation before you use vbelts.
 
 .. warning:: Please note that the software is provided "as is", without any warranties. The copyright owners and contributors are, in no event, liable for any damages caused by the use or misuse of the package. For more information see the licensing information.
 
