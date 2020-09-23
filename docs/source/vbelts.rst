@@ -7,16 +7,15 @@ Submodules
 vbelts.belt module
 ------------------
 
-.. automodule:: belt
+.. automodule:: vbelts.belt
    :members:
    :undoc-members:
    :show-inheritance:
 
-
 vbelts.length module
 --------------------
 
-.. automodule:: length
+.. automodule:: vbelts.length
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +23,7 @@ vbelts.length module
 vbelts.power module
 -------------------
 
-.. automodule:: power
+.. automodule:: vbelts.power
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,7 +31,7 @@ vbelts.power module
 vbelts.pulley module
 --------------------
 
-.. automodule:: pulley
+.. automodule:: vbelts.pulley
    :members:
    :undoc-members:
    :show-inheritance:
@@ -40,7 +39,7 @@ vbelts.pulley module
 vbelts.speed module
 -------------------
 
-.. automodule:: speed
+.. automodule:: vbelts.speed
    :members:
    :undoc-members:
    :show-inheritance:
@@ -48,7 +47,7 @@ vbelts.speed module
 vbelts.util module
 ------------------
 
-.. automodule:: util
+.. automodule:: vbelts.util
    :members:
    :undoc-members:
    :show-inheritance:
