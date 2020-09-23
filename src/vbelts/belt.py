@@ -7,7 +7,7 @@ Belt
 from vbelts.util import Belt, OutOfRangeError
 
 class HiPower(Belt):
-    r"""HiPower class calculates checks the conditions and selects the v-belt profile for this model.
+    r"""HiPower class checks the conditions and selects the v-belt profile for this model.
 
     Parameters
     ----------

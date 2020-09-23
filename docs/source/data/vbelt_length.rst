@@ -9,7 +9,7 @@ HiPower
 +++++++
 
 .. csv-table:: Type and length of the HiPower commercial Belts
-    :header: "profile", "type", "length"
+    :header: "profile", "length (mm)", "type"
     :widths: 20, 20, 20
 
     "a",695,"A-26"
@@ -54,10 +54,10 @@ HiPower
     "a",4150,"A-162"
     "a",4425,"A-173"
     "a",4605,"A-180"
-    "b",935","B-35"
-    "b",985","B-37"
-    "b",1010","B-38"
-    "b",1035","B-39"
+    "b",935,"B-35"
+    "b",985,"B-37"
+    "b",1010,"B-38"
+    "b",1035,"B-39"
     "b",1115,"B-42"
     "b",1215,"B-46"
     "b",1265,"B-48"
@@ -161,7 +161,7 @@ SuperHC
 +++++++
 
 .. csv-table:: Type and length of the SuperHC commercial Belts
-    :header: "profile", "type", "length"
+    :header: "profile", "length (mm)", "type"
     :widths: 20, 20, 20
 
     "3v",635,"3V250"
