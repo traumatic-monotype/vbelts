@@ -23,6 +23,7 @@ author = 'Glademir Karpinski Junior, Hector Balke Nodari'
 # The full version, including alpha/beta/rc tags
 release = '0.3.1-beta'
 
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
