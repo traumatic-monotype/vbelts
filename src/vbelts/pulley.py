@@ -3,10 +3,10 @@ Pulley
 ======
 """
 
-from vbelts.util import Pulley, Iterate, ConvergenceError
+from vbelts.util import _Pulley, _Iterate, _ConvergenceError
 from time import time
 
-class Driven(Pulley):
+class Driven(_Pulley):
     r"""Driven class stores essential properties of the driven pulley and calculates driving pulley properties. It also can select the appropriate commercial diameter for the driven pulley, updating the relevant properties like output rpm and gear ratio.
 
     Parameters
@@ -24,17 +24,13 @@ class Driven(Pulley):
     
     Examples
     --------
-    >>> driven_pulley = vbelts.pulley.Driven()
+    >>> driven_pulley = vbelts.pulley.Driven(240, 'a', 3, 1750, 1.846)
     >>> driven_pulley.driving_pulley()
-    placeholder
-    >>> driven_pulley.commercial()
-    placeholder
-
-    Notes
-    -----
-    Explicar sobre o iterador do método commercial.
+    130.01083423618635
+    >>> driven_pulley.commercial(130, 120)
+    [240, 1.8461538461538463, 1750, 947.9166666666666]
     """
-    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:Iterate=Iterate):
+    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:_Iterate=_Iterate):
         super().__init__(diam, vbelt_profile, power, rpm, iterator)
         self.gear_ratio = gear_ratio
     
@@ -49,7 +45,16 @@ class Driven(Pulley):
         
         Notes
         -----
-        Explicar e referenciar a equacao usada.
+        The driven gear ratio is calculated [#]_ by:
+
+        .. math::
+            D_{driving} = \frac{D_{driven}}{R}
+        
+        Where the `R` is the gear ratio.
+
+        References
+        ----------
+        .. [#] Douglas Wright. 2005."DANotes: V-Belt drives: Introduction", **V-BELT DRIVES**. Accessed September 23, 2020, http://www-mdp.eng.cam.ac.uk/web/library/enginfo/textbooks_dvd_only/DAN/V-belts/intro/intro.html.
         """
         return self.diam / self.gear_ratio
     
@@ -68,11 +73,7 @@ class Driven(Pulley):
         rpm : float
             Input rotational speed, [rpm]
         rpm_out : float
-            Calculated output rotational speed for the commercial diameter, [rpm]
-        
-        Notes
-        -----
-        Explicar sobre o iterador de convergencia.
+            Calculated output rotational speed for the commercial driven diameter, [rpm]
         """
         # calculate gear ratio range
         range_rpm = 100
@@ -83,7 +84,7 @@ class Driven(Pulley):
         driven_pulley = self.gear_ratio * driving_pulley
         diam_calc = driven_pulley
 
-        # iterate
+        # _Iterate
         error = 1
         t_i = time()
         while error > error_min:
@@ -100,7 +101,7 @@ class Driven(Pulley):
             t_f = time()
             elapsed_time = t_f - t_i
             if elapsed_time > 4:
-                raise ConvergenceError('The function could not reach convergence, try again with a lower value')
+                raise _ConvergenceError('The function could not reach convergence, try again with a lower value')
         
         # recalculate rpm_output
         base = 10
@@ -111,7 +112,7 @@ class Driven(Pulley):
 
 
 
-class Driving(Pulley):
+class Driving(_Pulley):
     r"""Driving class stores essential properties of the driving pulley and calculates driven pulley properties.
 
     Parameters
@@ -129,11 +130,11 @@ class Driving(Pulley):
     
     Examples
     --------
-    >>> driving_pulley = vbelts.pulley.Driving()
+    >>> driving_pulley = vbelts.pulley.Driving(130, 'a', 3, 1000, 1.846)
     >>> driving_pulley.driven_pulley()
-    placeholder
+    239.98000000000002
     """
-    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:Iterate=Iterate):
+    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:_Iterate=_Iterate):
         super().__init__(diam, vbelt_profile, power, rpm, iterator)
         self.gear_ratio = gear_ratio
 
@@ -147,6 +148,15 @@ class Driving(Pulley):
         
         Notes
         -----
-        Explicar e referenciar a equacao usada.
+        The driven gear ratio is calculated [#]_ by:
+
+        .. math::
+            D_{driven} = D_{driving} \cdot R
+            
+        Where the `R` is the gear ratio.
+
+        References
+        ----------
+        .. [#] Douglas Wright. 2005."DANotes: V-Belt drives: Introduction", **V-BELT DRIVES**. Accessed September 23, 2020, http://www-mdp.eng.cam.ac.uk/web/library/enginfo/textbooks_dvd_only/DAN/V-belts/intro/intro.html.
         """
         return self.diam * self.gear_ratio

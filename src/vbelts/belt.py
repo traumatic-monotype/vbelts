@@ -4,9 +4,9 @@ Belt
 
 """
 
-from vbelts.util import Belt, OutOfRangeError
+from vbelts.util import _Belt, _OutOfRangeError
 
-class HiPower(Belt):
+class HiPower(_Belt):
     r"""HiPower class checks the conditions and selects the v-belt profile for this model.
 
     Parameters
@@ -55,9 +55,9 @@ class HiPower(Belt):
          """
         # Define the maximum range
         if self.rpm_fastest > 5000 or self.est_power > 500:
-            return OutOfRangeError('Values out of range for the HiPower model: rpm > 5000 or est_power > 500')
+            return _OutOfRangeError('Values out of range for the HiPower model: rpm > 5000 or est_power > 500')
         elif self.rpm_fastest < 100 or self.est_power < 1:
-            return OutOfRangeError('Values out of range for the HiPower model: rpm < 100 or est_power < 1')
+            return _OutOfRangeError('Values out of range for the HiPower model: rpm < 100 or est_power < 1')
 
         if self.rpm_fastest >= self._boundary_a:
             profile = 'a'
@@ -70,7 +70,7 @@ class HiPower(Belt):
         self.profile = profile
 
 
-class SuperHC(Belt):
+class SuperHC(_Belt):
     r"""SuperHC class calculates checks the conditions and selects the v-belt profile for this model.
 
     Parameters
@@ -118,9 +118,9 @@ class SuperHC(Belt):
          """
         # Define the maximum range
         if self.rpm_fastest > 5000 or self.est_power > 1000:
-            return OutOfRangeError('Values out of range for the SuperHC model: rpm > 5000 or est_power > 1000')
+            return _OutOfRangeError('Values out of range for the SuperHC model: rpm > 5000 or est_power > 1000')
         elif self.rpm_fastest < 100 or self.est_power < 1:
-            return OutOfRangeError('Values out of range for the SuperHC model: rpm < 100 or est_power < 1')
+            return _OutOfRangeError('Values out of range for the SuperHC model: rpm < 100 or est_power < 1')
         
         if self.rpm_fastest >= self._boundary_3v:
             profile = '3v'

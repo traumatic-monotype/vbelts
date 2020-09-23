@@ -3,13 +3,14 @@ Length
 ======
 """
 
-from vbelts.util import Interpolate, Iterate, OutOfRangeError
+from vbelts.util import _Interpolate, _Iterate, _OutOfRangeError
 from abc import ABC
 
 h_factor = {0:0, 0.02:0.01, 0.04:0.02, 0.06:0.03, 0.08:0.04, 0.1:0.05, 0.12:0.06, 0.14:0.07, 0.16:0.08, 0.18:0.09, 0.2:0.1, 0.21:0.11, 0.23:0.12, 0.25:0.13, 0.27:0.14, 0.29:0.15, 0.3:0.16, 0.32:0.17, 0.34:0.18, 0.35:0.19, 0.37:0.2, 0.39:0.21, 0.4:0.22, 0.41:0.23, 0.43:0.24, 0.44:0.25, 0.46:0.26, 0.47:0.27, 0.48:0.28, 0.5:0.29, 0.51:0.3}
 
 
-class Dist(ABC):
+class _Dist(ABC):
+    """Abstract class holding private methods to calculate distance properties"""
     def __init__(self, min_diam:float, maj_diam:float):
         self.min_diam = min_diam
         self.maj_diam = maj_diam
@@ -27,7 +28,7 @@ class Dist(ABC):
         self.l_uncorr = 2 * self.center_uncorr + 1.57 * (self.maj_diam + self.min_diam) + ((self.maj_diam - self.min_diam)**2/(4 * self.center_uncorr))
 
 
-class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
+class PulleyBelt(_Dist):
     r"""PulleyBelt class calculates the corrected belt length and the corrected center distance.
 
     Parameters
@@ -68,7 +69,7 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
     .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
 
     """
-    def __init__(self, min_diam:float, maj_diam:float, belt:str, b_profile:str, iterator:Iterate=Iterate, interpol:Interpolate=Interpolate):  # inject the objects inside the class
+    def __init__(self, min_diam:float, maj_diam:float, belt:str, b_profile:str, iterator:_Iterate=_Iterate, interpol:_Interpolate=_Interpolate):  # inject the objects inside the class
         super().__init__(min_diam, maj_diam)
         self.belt = belt
         self.b_profile = b_profile
@@ -90,6 +91,8 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
 
         Returns
         -------
+        result : tuple
+            Contains the l_corr and b_type in tuple data form, [-]
         l_corr : float
             Length of the commercial belt chosen, [mm]
         b_type : str
@@ -130,7 +133,7 @@ class PulleyBelt(Dist):  # PROBLEMA NA VARIAVEL BELT, ESTA PASSANDO O NOME
                 self._h = self.interpol(adim_factor, last_factor, key, self.corr_dict.get(last_factor), self.corr_dict.get(key)).y_data()
             last_factor = key
         if self._h is None:
-            raise OutOfRangeError('Value out of range for these parameters')
+            raise _OutOfRangeError('Value out of range for these parameters')
 
 
     def _l_a(self):

@@ -1,7 +1,7 @@
 """Force (REVIEW)
 """
 from math import pi, exp
-from vbelts.util import _read_csv_data, Iterate, Interpolate, OutOfRangeError
+from vbelts.util import _read_csv_data, _Iterate, _Interpolate, _OutOfRangeError
 
 
 
@@ -21,7 +21,7 @@ def torque(power:float, rpm_pulley:float):
 
 
 def _contact_arc_rad(factor:float):
-    """Searches and interpolates a factor on a csv data table
+    """Searches and _Interpolates a factor on a csv data table
     :param factor: factor (D-d)/Ca
     :type factor: float
     :return: angle of the contact between v-belt and pulley, rad
@@ -38,7 +38,7 @@ def _contact_arc_rad(factor:float):
             return (pi*contact_arc/180)
         last_factor = line['factor']
         last_contact_arc = line['contact_arc']
-    raise OutOfRangeError('Value out of range for these parameters')
+    raise _OutOfRangeError('Value out of range for these parameters')
 
 
 def _fric_coef(belt_material:str='rubber', pulley_material:str='steel'):
@@ -54,7 +54,7 @@ def _fric_coef(belt_material:str='rubber', pulley_material:str='steel'):
         if line['belt_material'] == belt_material:
             if line['pulley_material'] == pulley_material:
                 return line['fric_coef']
-    raise OutOfRangeError('Value out of range for these parameters')
+    raise _OutOfRangeError('Value out of range for these parameters')
 
 
 def _forces(m_torque:float, diam_driving:float, diam_driven:float, corr_distance_pulleys:float, belt_material:str='rubber', pulley_material:str='steel'):

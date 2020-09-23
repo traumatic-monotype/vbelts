@@ -22,7 +22,7 @@ copyright = '2020, Glademir Karpinski Junior, Hector Balke Nodari'
 author = 'Glademir Karpinski Junior, Hector Balke Nodari'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.2-beta'
+release = '0.3.0-beta'
 
 
 # -- General configuration ---------------------------------------------------

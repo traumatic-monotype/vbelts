@@ -73,6 +73,7 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    power
    length
    pulley
+   util
 
 
 .. toctree::
@@ -83,6 +84,7 @@ vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & 
    data/vbelt_types
    data/vbelt_length
    data/vbelt_h_factor
+   data/motor_machine_data
 
 
 Indices and tables

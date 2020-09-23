@@ -2,5 +2,5 @@
 
 .. automodule:: vbelts.belt
    :members:
-   :undoc-members:
+   :undoc-members: Belt
    :show-inheritance:

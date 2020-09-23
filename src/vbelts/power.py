@@ -4,7 +4,7 @@ Power
 
 """
 
-from vbelts.util import Iterate, OutOfRangeError
+from vbelts.util import _Iterate, _OutOfRangeError
 
 
 class EstPower():
@@ -113,7 +113,7 @@ class EstPower():
         
         Notes
         -----
-        The equation to calculate the estimated power, using the engine power $P_{engine}$ and the service factor $F_s$:
+        The equation to calculate the estimated power, using the engine power `P_{engine}` and the service factor `F_s`:
 
         .. math::
             P_p = P_{engine} \cdot F_s
@@ -160,7 +160,7 @@ class TransPower():
     ----------
     .. [#] Claudino Alves, Claudemir. "Transmissão por Correias - Dimensionamento Atividade 2". **Fatec Itaquera**. Accessed September 16, 2020, http://claudemiralves.weebly.com/uploads/3/8/6/2/3862918/dimen._de_correias.pdf.
     """
-    def __init__(self, vbelt_model:str, vbelt_profile:str, vbelt_type:str, est_power:float, gear_ratio:float, belt_length_corr:float, min_diam:float, maj_diam:float, rpm:float, iterator:Iterate=Iterate):
+    def __init__(self, vbelt_model:str, vbelt_profile:str, vbelt_type:str, est_power:float, gear_ratio:float, belt_length_corr:float, min_diam:float, maj_diam:float, rpm:float, iterator:_Iterate=_Iterate):
         self.b_model = vbelt_model
         self.b_profile = vbelt_profile
         self.b_type = vbelt_type
@@ -229,13 +229,13 @@ class TransPower():
 
         Notes
         -----
-        Before calculate the belt quantity, the transmitted power $P_t$ in horse-power has to be calculated [#]_ by:
+        Before calculate the belt quantity, the transmitted power `P_t` in horse-power has to be calculated [#]_ by:
 
         .. math::
             P_t = (P_b + P_a) \cdot f_{cc} \cdot f_{cac}
 
-        Where $P_b$ is the basic power transmitted, $P_a$ is the additional power transmitted, $f_{cc}$ is the length correction factor and $f_{cac}$ is the contact arc correction factor.
-        Then, the belt quantity is calculated [#]_ by:
+        Where `P_b` is the basic power transmitted, `P_a` is the additional power transmitted, `f_{cc}` is the length correction factor and `f_{cac}` is the contact arc correction factor.
+        Then, the belt quantity is calculated by:
 
         .. math::
             N_{v-belt} = \frac{P_{estimated}}{P_t}
