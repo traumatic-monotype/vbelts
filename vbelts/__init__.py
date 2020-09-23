@@ -26,28 +26,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 vbelts provides functions that allow the computation of complex factors in v-belt dimensioning."""
 
-import os
+# import os
 
-from vbelts import belt
-from vbelts import length
-from vbelts import util
-from vbelts import power
-from vbelts import speed
+import belt
+import length
+import util
+import power
+import speed
 # from . import force
-from vbelts import pulley
+import pulley
 
-from .belt import *
-from .length import *
-from .util import *
-from .power import *
-from .speed import *
-# from .force import *
-from .pulley import *
+# from . belt import *
+# from . length import *
+# from . util import *
+# from . power import *
+# from . speed import *
+# # # from .force import *
+# from . pulley import *
 
 __all__ = ['belt', 'length', 'util', 'power', 'speed', 'pulley']
 
-try:
-    vbelts_dir = os.path.dirname(__file__)
-    vbelts_data_dir = os.path.join(vbelts_dir, 'data')
-except:
-    pass
+# try:
+#     vbelts_dir = os.path.dirname(__file__)
+#     vbelts_data_dir = os.path.join(vbelts_dir, 'data')
+# except:
+#     pass
