@@ -1,4 +1,4 @@
-from vbelts import pulley as p
+import pulley as p
 import pytest
 
 # Driven

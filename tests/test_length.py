@@ -1,4 +1,4 @@
-from vbelts import length as l
+import length as l
 import pytest
 
 # PulleyBelt lc

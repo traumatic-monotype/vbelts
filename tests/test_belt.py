@@ -1,4 +1,4 @@
-from vbelts import belt as b
+import belt as b
 import pytest
 
 # HiPower Class
