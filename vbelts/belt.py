@@ -1,4 +1,4 @@
-from vbelts.util import _Belt, _OutOfRangeError
+from util import _Belt, _OutOfRangeError
 
 class HiPower(_Belt):
     r"""HiPower class checks the conditions and selects the v-belt profile for this model.

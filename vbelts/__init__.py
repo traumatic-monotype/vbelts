@@ -43,3 +43,11 @@ from .power import *
 from .speed import *
 # from .force import *
 from .pulley import *
+
+__all__ = ['belt', 'length', 'util', 'power', 'speed', 'pulley']
+
+try:
+    vbelts_dir = os.path.dirname(__file__)
+    vbelts_data_dir = os.path.join(vbelts_dir, 'data')
+except:
+    pass

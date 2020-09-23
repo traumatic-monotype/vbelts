@@ -1,4 +1,4 @@
-from vbelts.util import _Iterate, _OutOfRangeError
+from util import _Iterate, _OutOfRangeError
 
 
 class EstPower():

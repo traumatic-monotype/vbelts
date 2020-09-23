@@ -1,7 +1,7 @@
 """Force (REVIEW)
 """
 from math import pi, exp
-from vbelts.util import _read_csv_data, _Iterate, _Interpolate, _OutOfRangeError
+from util import _read_csv_data, _Iterate, _Interpolate, _OutOfRangeError
 
 
 
