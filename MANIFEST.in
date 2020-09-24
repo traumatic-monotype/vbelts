@@ -10,3 +10,6 @@ recursive-include tests *.py
 
 # added by check_manifest.py
 recursive-include docs *.rst
+
+# added by check_manifest.py
+include *.yml
