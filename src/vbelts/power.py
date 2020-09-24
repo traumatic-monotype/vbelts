@@ -1,4 +1,4 @@
-from util import _Iterate, _OutOfRangeError
+from vbelts.util import _Iterate, _OutOfRangeError
 
 
 class EstPower():
@@ -192,7 +192,7 @@ class TransPower():
             elif 10 < temp_result <= 120:
                 self._p_basic = temp_result - 2.5
         else:
-            self.p_basic = temp_result
+            self._p_basic = temp_result
     
 
     def _additional(self):

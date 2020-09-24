@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "C:\\Users\\JUNIOR\\.virtualenvs\\vbelts-C8CHkizo\\Scripts\\python.exe",
+    "python.pythonPath": "/home/junior/.local/share/virtualenvs/vbelts-80K_w7HZ/bin/python",
     "restructuredtext.confPath": "${workspaceFolder}\\docs\\source"
 }

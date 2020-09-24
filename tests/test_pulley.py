@@ -1,5 +1,5 @@
-import pulley as p
-import pytest
+from vbelts import pulley as p
+
 
 # Driven
 

@@ -11,7 +11,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os, sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../../src'))
 
 
 # -- Project information -----------------------------------------------------
@@ -21,7 +21,7 @@ copyright = '2020, Glademir Karpinski Junior, Hector Balke Nodari'
 author = 'Glademir Karpinski Junior, Hector Balke Nodari'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.4-beta'
+release = '0.3.5-beta'
 
 master_doc = 'index'
 

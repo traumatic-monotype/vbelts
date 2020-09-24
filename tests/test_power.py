@@ -1,4 +1,4 @@
-import power as p
+from vbelts import power as p
 import pytest
 
 # EstPower

@@ -1,4 +1,4 @@
-import speed as s
+from vbelts import speed as s
 import pytest
 
 def eval_peripheral(diam, rpm):

@@ -1,4 +1,4 @@
-from util import _Pulley, _Iterate, _ConvergenceError
+from vbelts.util import _Pulley, _Iterate, _ConvergenceError
 from time import time
 
 class Driven(_Pulley):
