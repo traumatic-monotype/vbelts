@@ -159,7 +159,7 @@ class _ReIterate():
                 if float(line['rpm']) == param_2:
                     return (float(line['power_b']), True)
                 elif float(line['rpm']) > param_2:
-                    return (self.interpol(param_2, last_row_1, float(line['rpm']), last_row_2, float(line['power_b'])).y_data(), False)
+                    return (self.interpol(param_2, last_row_1, float(line['rpm']), last_row_2, float(line['power_b'])).y_data(), True)
             last_row_1 = float(line['rpm'])
             last_row_2 = float(line['power_b'])
         raise _OutOfRangeError('Value out of range for these parameters')

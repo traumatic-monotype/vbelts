@@ -242,7 +242,7 @@ class TransPower():
             gear_ratio_corr = 1/self.gear_ratio
         else:
             gear_ratio_corr = self.gear_ratio
-        self._p_add = self.iterator(globals()[filename_pa]).four_rows(globals()[filename_pa], gear_ratio_corr, self.rpm)
+        self._p_add = self.iterator().four_rows(globals()[filename_pa], gear_ratio_corr, self.rpm)
 
 
     def _fc_arc(self):
