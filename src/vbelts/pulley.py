@@ -1,4 +1,4 @@
-from vbelts.util import _Pulley, _Iterate, _ConvergenceError
+from vbelts.util import _Pulley, _Iterate, _ReIterate, _ConvergenceError
 from time import time
 
 class Driven(_Pulley):
@@ -25,7 +25,7 @@ class Driven(_Pulley):
     >>> driven_pulley.commercial(130, 120)
     [240, 1.8461538461538463, 1750, 947.9166666666666]
     """
-    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:_Iterate=_Iterate):
+    def __init__(self, diam:float, vbelt_profile:str, power:float, rpm:float, gear_ratio:float, iterator:_ReIterate=_ReIterate):
         super().__init__(diam, vbelt_profile, power, rpm, iterator)
         self.gear_ratio = gear_ratio
     

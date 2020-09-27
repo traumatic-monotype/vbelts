@@ -134,6 +134,85 @@ class _MinDist():
             raise ValueError
 
 
+class _ReIterate():
+    def __init__(self, interpol:_Interpolate=_Interpolate, m_dist:_MinDist=_MinDist):
+        self.interpol = interpol
+        self.m_dist = m_dist
+
+
+    def read(self, dict_master_list):
+        for line in dict_master_list:
+            yield line
+
+    def three_rows(self, dict_list, param_1, param_2):
+        """_Iterate through a list with a list of three columns using two parameters and return the last one, _Interpolated or not
+        """
+        last_row_1 = 0
+        last_row_2 = 0
+        for line in self.read(dict_list):
+            if float(line['diameter']) == param_1:
+                if float(line['rpm']) == param_2:
+                    return (float(line['power_b']), False)  # first return the value, second need for adjusting, used in TransPower._basic()
+                elif float(line['rpm']) > param_2:
+                    return (self.interpol(param_2, last_row_1, float(line['rpm']), last_row_2, float(line['power_b'])).y_data(), False)
+            elif float(line['diameter']) > param_1:
+                if float(line['rpm']) == param_2:
+                    return (float(line['power_b']), True)
+                elif float(line['rpm']) > param_2:
+                    return (self.interpol(param_2, last_row_1, float(line['rpm']), last_row_2, float(line['power_b'])).y_data(), False)
+            last_row_1 = float(line['rpm'])
+            last_row_2 = float(line['power_b'])
+        raise _OutOfRangeError('Value out of range for these parameters')
+
+
+    def four_rows(self, dict_list, param_1, param_2):
+        """Iterate through a list of four columns using two parameters, the first two are a range, and return the last, _Interpolated or not."""
+        for line in self.read(dict_list):
+            if float(line['gr_low']) > param_1:
+                raise _OutOfRangeError('Value out of range for these parameters')
+            elif float(line['gr_low']) <= param_1 < float(line['gr_high']):
+                if float(line['rpm']) == param_2:
+                    return float(line['power_a'])
+                elif float(line['rpm']) > param_2:
+                    return self.interpol(param_2, last_row_2, float(line['rpm']), last_row_3, float(line['power_a'])).y_data()
+            last_row_2 = float(line['rpm'])
+            last_row_3 = float(line['power_a'])
+        raise _OutOfRangeError('Value out of range for these parameters')
+
+
+    def three_rows_choose(self, dict_list, param, w_column:str):
+        """_Iterate through a file with a list of three rows using one parameter, chosing which row to use to return the value.
+        """
+        last_row_1 = 0
+        last_row_chosed = 0
+        for line in self.read(dict_list):
+            if float(line['factor']) == param:
+                return float(line[w_column])
+            elif float(line['factor']) > param:
+                return self.interpol(param, last_row_1, float(line['factor']), last_row_chosed, float(line[w_column])).y_data()
+            last_row_1 = float(line['factor'])
+            last_row_chosed = float(line[w_column])
+        raise _OutOfRangeError('Value out of range for these parameters')
+
+
+    def belt_type(self, dict_list:list, param_1:str, param_2:float):
+        for line in self.read(dict_list):
+            if line['profile'] == param_1:
+                last_length = 0
+                if float(line['length']) == param_2:  # if length == length on data
+                    return (float(line['length']), line['type'])
+                elif float(line['length']) > param_2:
+                    chosed_length = self.m_dist(param_2, last_length, float(line['length'])).calc()
+                    # check what length and type was chosen and return them
+                    if chosed_length == float(line['length']):
+                        chosed_type = line['type']
+                    else:
+                        chosed_type = last_type
+                    return (chosed_length, chosed_type)
+            last_length = float(line['length'])
+            last_type = line['type']
+        raise _OutOfRangeError('Value out of range for these')
+
 class _CSV(ABC):
     """Abstract class for handling csv files"""
     @abstractmethod
@@ -397,7 +476,7 @@ class _Belt():
 
 class _Pulley(ABC):
     """Abstract class for the Driven and Driving pulley class"""
-    def __init__(self, diam, vbelt_profile:str, power:float, rpm:float, iterator:_Iterate=_Iterate):
+    def __init__(self, diam, vbelt_profile:str, power:float, rpm:float, iterator:_ReIterate=_ReIterate):
         self.diam = diam
         self.vbelt_profile = vbelt_profile
         self.power = power
