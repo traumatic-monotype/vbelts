@@ -2,6 +2,8 @@
 
 Vbelts projects aims to deliver a tool for v-belt calculation and dimensioning, an open-source software for engineers and technicians working in mechanical engineering. It includes modules for the most common needs when calculating v-belts.
 
+**This project is archived and no longer mantained.**
+
 ## Features
 
 - Profile selection
@@ -43,5 +45,6 @@ https://github.com/traumatic-monotype/vbelts
 
 
 # License information
+
 
 vbelts is BSD licensed. See ``LICENSE.txt`` for full information on the terms & conditions for usage of this software, and a DISCLAIMER OF ALL WARRANTIES.
